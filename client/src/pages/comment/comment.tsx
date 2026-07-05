@@ -25,28 +25,32 @@ const Comment = () => {
   });
 
   const fetchData = async () => {
-    Taro.cloud
-      .callFunction({
-        name: 'comment',
-        data: {
-          appId,
-          appKey,
-          serverURLs,
-          sql: `select count(*), * from Comment limit ${
-            currentPage * pageSize
-          },${pageSize} order by createdAt desc`,
-        },
-      })
-      .then(({ result }: any) => {
-        if (result && result.success) {
-          setList(list.concat(result.data));
-          setCount(result.count);
-          if (result.count <= (currentPage + 1) * pageSize) {
-            setHasMore(false);
+    try {
+      Taro.cloud
+        .callFunction({
+          name: 'comment',
+          data: {
+            appId,
+            appKey,
+            serverURLs,
+            sql: `select count(*), * from Comment limit ${
+              currentPage * pageSize
+            },${pageSize} order by createdAt desc`,
+          },
+        })
+        .then(({ result }: any) => {
+          if (result && result.success) {
+            setList(list.concat(result.data));
+            setCount(result.count);
+            if (result.count <= (currentPage + 1) * pageSize) {
+              setHasMore(false);
+            }
           }
-        }
-      })
-      .catch();
+        })
+        .catch(() => {});
+    } catch (e) {
+      console.warn('Cloud API not available');
+    }
   };
 
   return (

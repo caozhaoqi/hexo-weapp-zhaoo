@@ -21,18 +21,30 @@ export const getUserInfo = async (): Promise<{
   gender: number;
   language: string;
   province: string;
-}> => {
+} | null> => {
   const storage = getStorageSync('userinfo');
   if (storage) {
     return storage;
   } else {
-    const res = await Taro.getUserProfile({
-      desc: '用户信息将用于存储社交状态',
-    });
-    const { userInfo } = res;
-    setStorageSync('userinfo', userInfo);
-    return userInfo;
+    return null;
   }
+};
+
+export const requestUserProfile = async (): Promise<{
+  avatarUrl: string;
+  nickName: string;
+  city: string;
+  country: string;
+  gender: number;
+  language: string;
+  province: string;
+}> => {
+  const res = await Taro.getUserProfile({
+    desc: '用户信息将用于存储社交状态',
+  });
+  const { userInfo } = res;
+  setStorageSync('userinfo', userInfo);
+  return userInfo;
 };
 
 export const filterHtml = (str) => {

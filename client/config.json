@@ -1,17 +1,17 @@
 {
-  "baseUrl": "https://www.izhaoo.com/api",
-  "webUrl": "https://www.izhaoo.com",
+  "baseUrl": "https://caozhaoqi.github.io/api",
+  "webUrl": "https://caozhaoqi.github.io",
   "donate": {
-    "wechat": "https://pic.izhaoo.com/wechat.jpg",
-    "alipay": "https://pic.izhaoo.com/alipay.jpg"
+    "wechat": "https://caozhaoqi.github.io/logo.png",
+    "alipay": "https://caozhaoqi.github.io/logo.png"
   },
   "leancloud": {
-    "appId": "5nmYX1URDFyDdOVu6WxizEsF-gzGzoHsz",
+    "appId": "5nmYX1URDFyD1Vu6WxizEsF-gzGzoHsz",
     "appKey": "xllg4mYlf0eT3efi7N0VOTeH",
     "serverURLs": "https://leancloud.cn/"
   },
   "baiduAnalyze": {
-    "appKey": "f6ba65005c"
+    "appKey": "f6ba6500c"
   },
   "motto": {
     "api": "https://v1.hitokoto.cn/?encode=text&c=i",

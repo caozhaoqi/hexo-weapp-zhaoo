@@ -16,6 +16,7 @@ import Donate from '@/components/donate';
 import ImmersiveTitlebar from '@/components/immersive-titlebar';
 import Fab from '@/components/fab';
 import { IPostItem } from '@/types/post';
+import config from '../../../config.json';
 import './post.scss';
 
 const Post = () => {
@@ -57,21 +58,29 @@ const Post = () => {
     }
   };
 
+  const getImageUrl = (src: string): string => {
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return src;
+    }
+    const baseHost = config.baseUrl.replace('/api', '');
+    return baseHost + src;
+  };
+
   const replaceHTML = (data) => {
     data = data.replace(
       /<img([^>]*)src="([^"]*)"([^>]*)>/gim,
       (match, attrBegin, src: string, attrEnd) => {
-        // 缓存所有图片
+        const fullUrl = getImageUrl(src);
         const imagesTemp = images;
-        imagesTemp.push(src);
+        imagesTemp.push(fullUrl);
         setImages(imagesTemp);
-        return `<img ${attrBegin} src='${src}' mode='widthFix' id='image_${src}' lazy-load ${attrEnd}>`; // 重定义图片标签
+        return `<img ${attrBegin} src='${fullUrl}' mode='widthFix' id='image_${fullUrl}' lazy-load ${attrEnd}>`;
       }
     );
     data = data.replace(
       /<a([^>]*)href="([^"]*)"([^>]*)>/gim,
       (match, attrBegin, href: string, attrEnd) => {
-        return `<a ${attrBegin} id='link_${href}' ${attrEnd}>`; // 重定义链接标签
+        return `<a ${attrBegin} id='link_${href}' ${attrEnd}>`;
       }
     );
     return data;

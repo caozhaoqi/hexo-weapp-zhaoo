@@ -19,15 +19,15 @@ const Gallery = () => {
 
   useShareTimeline(() => {
     return {
-      title: gallery.name,
-      imageUrl: gallery.photos[0],
+      title: gallery?.name || '相册',
+      imageUrl: gallery?.photos?.[0] || '',
     };
   });
 
   useShareAppMessage(() => {
     return {
-      title: gallery.name,
-      imageUrl: gallery.photos[0],
+      title: gallery?.name || '相册',
+      imageUrl: gallery?.photos?.[0] || '',
     };
   });
 

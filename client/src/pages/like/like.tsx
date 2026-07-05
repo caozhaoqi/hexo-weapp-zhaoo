@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useReachBottom } from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
+import { useReachBottom, showToast } from '@tarojs/taro';
+import { View, Text, Button } from '@tarojs/components';
 import LiteLoading from '@/components/lite-loading';
 import PostList from '@/components/post-list';
 import Icon from '@/components/icon';
-import { getUserInfo } from '@/utils/index';
+import { getUserInfo, requestUserProfile } from '@/utils/index';
 import AV from 'leancloud-storage/dist/av-weapp.js';
 import { leancloud } from '../../../config.json';
 import { formateDate } from '@/utils/index';
@@ -27,20 +27,45 @@ const Like = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
+  const [nickName, setNickName] = useState<string>('');
 
   useEffect(() => {
-    fetchData();
+    checkUserInfo();
   }, []);
 
   useReachBottom(() => {
-    if (!hasMore) return;
+    if (!hasMore || !hasUserInfo) return;
     setCurrentPage(currentPage + 1);
   });
 
-  const fetchData = async () => {
-    const { nickName } = await getUserInfo();
+  const checkUserInfo = async () => {
+    const userInfo = await getUserInfo();
+    if (userInfo) {
+      setNickName(userInfo.nickName);
+      setHasUserInfo(true);
+      fetchData(userInfo.nickName);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const userInfo = await requestUserProfile();
+      setNickName(userInfo.nickName);
+      setHasUserInfo(true);
+      fetchData(userInfo.nickName);
+    } catch (e) {
+      showToast({
+        icon: 'none',
+        title: '请授权登录',
+        duration: 2000,
+      });
+    }
+  };
+
+  const fetchData = async (userNickName: string) => {
     AV.Query.doCloudQuery(
-      `select count(*), * from Like where nickName = '${nickName}' limit ${
+      `select count(*), * from Like where nickName = '${userNickName}' limit ${
         currentPage * pageSize
       },${pageSize} order by createdAt desc`
     )
@@ -75,23 +100,29 @@ const Like = () => {
 
   return (
     <View className={styles.like}>
-      {list.length > 0
-        ? list.map((item) => (
-            <PostList
-              key={item.slug}
-              cover={item.cover}
-              title={item.title}
-              slug={item.slug}
-              excerpt={item.excerpt}
-              infoList={renderInfoList(item)}
-            />
-          ))
-        : null}
-      {hasMore ? (
+      {!hasUserInfo ? (
+        <View className={styles.loginWrapper}>
+          <Button className={styles.loginButton} onClick={() => handleLogin()}>
+            登录查看我的收藏
+          </Button>
+        </View>
+      ) : list.length > 0 ? (
+        list.map((item) => (
+          <PostList
+            key={item.slug}
+            cover={item.cover}
+            title={item.title}
+            slug={item.slug}
+            excerpt={item.excerpt}
+            infoList={renderInfoList(item)}
+          />
+        ))
+      ) : null}
+      {hasUserInfo && (hasMore ? (
         <LiteLoading text='正在加载...' icon='jingyu' />
       ) : (
         <LiteLoading text='本来无一物，何处惹尘埃 ~' />
-      )}
+      ))}
     </View>
   );
 };

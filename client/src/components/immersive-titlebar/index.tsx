@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import Taro, { usePageScroll } from '@tarojs/taro';
+import Taro, { usePageScroll, getWindowInfo, getDeviceInfo } from '@tarojs/taro';
 import { Text, View } from '@tarojs/components';
 import Icon from '@/components/icon';
 import styles from './index.module.scss';
@@ -15,19 +15,18 @@ const ImmersiveTitlebar: FC<IImmersiveTitlebarProps> = ({ title }) => {
   >([44, 44, 88]);
 
   useEffect(() => {
-    Taro.getSystemInfo().then((e) => {
-      let customBar, headerBar;
-      const { statusBarHeight, system } = e;
-      let rect = Taro.getMenuButtonBoundingClientRect();
-      if (system.toLowerCase().indexOf('ios') > -1) {
-        customBar = rect.bottom + (rect.top - statusBarHeight) * 2;
-        headerBar = customBar - statusBarHeight;
-      } else {
-        headerBar = rect.height + (rect.top - statusBarHeight) * 2;
-        customBar = headerBar + statusBarHeight;
-      }
-      setTitlebarHeight([headerBar, statusBarHeight, customBar]);
-    });
+    const { statusBarHeight } = getWindowInfo();
+    const { system } = getDeviceInfo();
+    let customBar, headerBar;
+    let rect = Taro.getMenuButtonBoundingClientRect();
+    if (system.toLowerCase().indexOf('ios') > -1) {
+      customBar = rect.bottom + (rect.top - statusBarHeight) * 2;
+      headerBar = customBar - statusBarHeight;
+    } else {
+      headerBar = rect.height + (rect.top - statusBarHeight) * 2;
+      customBar = headerBar + statusBarHeight;
+    }
+    setTitlebarHeight([headerBar, statusBarHeight, customBar]);
   }, []);
 
   usePageScroll(({ scrollTop }) => {

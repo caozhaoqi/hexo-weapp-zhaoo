@@ -11,3 +11,19 @@
   align-items: center;
   margin-right: 5px;
 }
+
+.loginWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.loginButton {
+  width: 400px;
+  height: 80px;
+  background-color: $color-link;
+  border-radius: 40px;
+  color: #fff;
+  font-size: 28rpx;
+}

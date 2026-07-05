@@ -27,23 +27,34 @@ const usePagination: IUsePagination = () => {
   // 触底无限加载
   useReachBottom(() => {
     getMoreData();
-    vibrateShort();
+    try {
+      vibrateShort();
+    } catch (e) {
+      console.warn('vibrateShort not supported');
+    }
   });
 
   // 下拉刷新
   usePullDownRefresh(() => {
     refresh();
-    vibrateShort();
+    try {
+      vibrateShort();
+    } catch (e) {
+      console.warn('vibrateShort not supported');
+    }
   });
 
   const fetchData = async () => {
     const { data, pageCount } = (await getPosts(pageSize)) || {};
-    if (!data || !pageCount || data.length < pageCount) {
+    if (!data || !pageCount || data.length === 0) {
       setHasMore(false);
     } else {
       currentData
         ? setCurrentData(currentData.concat(data))
         : setCurrentData(data);
+      if (data.length < pageCount) {
+        setHasMore(false);
+      }
     }
     setIsLoading(false);
     stopPullDownRefresh();
@@ -55,7 +66,6 @@ const usePagination: IUsePagination = () => {
     setCurrentData([]);
     setHasMore(true);
     setPageSize(1);
-    fetchData();
   };
 
   return [currentData, hasMore, isLoading];

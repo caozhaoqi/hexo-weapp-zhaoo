@@ -44,6 +44,8 @@
     color: $color-middle;
     line-height: 2;
     font-size: 0.85em;
+    user-select: text;
+    -webkit-user-select: text;
 
     @for $i from 1 through 6 {
       .h#{$i} {
@@ -136,21 +138,26 @@
       margin: 0;
       overflow: auto;
       margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
 
       .table {
         border: none;
+        width: 100%;
 
         .td {
           padding: 0;
+          vertical-align: top;
 
           &.gutter {
             display: none;
           }
 
           &.code {
-            background-color: $color-background-deep;
-            padding: 1em;
+            background-color: #1e1e1e;
+            padding: 16rpx;
             border: none;
+            width: 100%;
           }
 
           .table,
@@ -158,6 +165,59 @@
             margin: 0;
             text-align: left;
             border: 0;
+          }
+
+          .pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            font-size: 24rpx;
+            line-height: 1.6;
+            color: #d4d4d4;
+
+            .code {
+              font-family: inherit;
+              font-size: inherit;
+              line-height: inherit;
+              color: inherit;
+
+              .keyword {
+                color: #569cd6;
+              }
+
+              .string {
+                color: #ce9178;
+              }
+
+              .comment {
+                color: #6a9955;
+                font-style: italic;
+              }
+
+              .number {
+                color: #b5cea8;
+              }
+
+              .function {
+                color: #dcdcaa;
+              }
+
+              .literal {
+                color: #569cd6;
+              }
+
+              .class {
+                color: #4ec9b0;
+              }
+
+              .attr {
+                color: #9cdcfe;
+              }
+
+              .subst {
+                color: #d4d4d4;
+              }
+            }
           }
         }
       }

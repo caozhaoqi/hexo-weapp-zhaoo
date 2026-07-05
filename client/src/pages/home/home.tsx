@@ -10,7 +10,7 @@ const Home = () => {
 
   useShareAppMessage(() => {
     return {
-      title: 'zhaoo',
+      title: 'Arona share a post to you！',
     };
   });
 
@@ -22,7 +22,7 @@ const Home = () => {
           ))
         : null}
       {isLoading ? <LiteLoading text='正在加载...' icon='jingyu' /> : null}
-      {!hasMore ? <LiteLoading text='本来无一物，何处惹尘埃 ~' /> : null}
+      {!hasMore ? <LiteLoading text='忍吧浮名去了，换作浅斟低唱~' /> : null}
     </ScrollView>
   );
 };

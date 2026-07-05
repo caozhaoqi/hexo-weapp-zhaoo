@@ -1,6 +1,13 @@
-dist/
+client/dist/
 deploy_versions/
 .temp/
 .rn_temp/
 node_modules/
 .DS_Store
+client/dist
+./client/swc/
+*dist/
+.cloudbase/
+client/dist
+client/node_modules
+logs.log

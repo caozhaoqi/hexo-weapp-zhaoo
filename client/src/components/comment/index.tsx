@@ -16,7 +16,7 @@ import Icon from '@/components/icon';
 import { get } from '@/apis/request';
 import AV from 'leancloud-storage/dist/av-weapp.js';
 import { leancloud } from '../../../config.json';
-import { getUserInfo } from '@/utils/index';
+import { getUserInfo, requestUserProfile } from '@/utils/index';
 import styles from './index.module.scss';
 
 interface ICommentProps {
@@ -44,39 +44,56 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
   }, []);
 
   const fetchData = () => {
-    Taro.cloud
-      .callFunction({
-        name: 'comment',
-        data: {
-          appId,
-          appKey,
-          serverURLs,
-          sql: `select * from Comment where url = '${url}' order by createdAt desc`,
-        },
-      })
-      .then(({ result }: any) => {
-        if (result && result.success) {
-          setList(result.data);
-        }
-      })
-      .catch();
+    try {
+      Taro.cloud
+        .callFunction({
+          name: 'comment',
+          data: {
+            appId,
+            appKey,
+            serverURLs,
+            sql: `select * from Comment where url = '${url}' order by createdAt desc`,
+          },
+        })
+        .then(({ result }: any) => {
+          if (result && result.success) {
+            setList(result.data);
+          }
+        })
+        .catch(() => {});
+    } catch (e) {
+      console.warn('Cloud API not available');
+    }
   };
 
   const sendComment = async () => {
     if (!commentValue) return;
-    const { avatarUrl, nickName } = await getUserInfo();
+    let userInfo = await getUserInfo();
+    if (!userInfo) {
+      try {
+        userInfo = await requestUserProfile();
+      } catch (e) {
+        showToast({
+          title: '请授权登录',
+          icon: 'none',
+          duration: 2000,
+        });
+        return;
+      }
+    }
+    const { avatarUrl, nickName } = userInfo;
     try {
       const ipRes = await get(
         'https://pv.sohu.com/cityjson?ie=utf-8',
         {},
         {},
         false
-      ); //接口获取IP
+      );
       const ip = ipRes
         .split(' ')[4]
         .replace('"', '')
         .replace('"', '')
-        .replace(',', ''); //解析IP数据
+        .replace(',', '');
       const query = new Model();
       query.save({
         url,
@@ -144,7 +161,7 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
           <View style={{ flex: 1, overflow: 'scroll' }}>
             <ScrollView scrollY className={styles.content}>
               <CommentList list={list} />
-              <LiteLoading text='本来无一物，何处惹尘埃 ~' />
+              <LiteLoading text='忍把浮名去了，换做浅斟低唱' />
               <View className={styles.placeholder} />
             </ScrollView>
           </View>

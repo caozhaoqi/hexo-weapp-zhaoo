@@ -1,54 +1,23 @@
 {
-    "setting": {},
-    "condition": {
-        "plugin": {
-            "list": []
-        },
-        "game": {
-            "list": []
-        },
-        "gamePlugin": {
-            "list": []
-        },
-        "miniprogram": {
-            "list": [
-                {
-                    "name": "pages/integral/integral",
-                    "pathName": "pages/integral/integral",
-                    "query": "",
-                    "scene": null
-                },
-                {
-                    "name": "pages/post/post",
-                    "pathName": "pages/post/post",
-                    "query": "slug=hexo-theme-zhaoo",
-                    "scene": null
-                },
-                {
-                    "name": "pages/my/my",
-                    "pathName": "pages/my/my",
-                    "query": "",
-                    "scene": 1000
-                },
-                {
-                    "name": "pages/home/home",
-                    "pathName": "pages/home/home",
-                    "query": "",
-                    "scene": 1011
-                },
-                {
-                    "name": "pages/comment/comment",
-                    "pathName": "pages/comment/comment",
-                    "query": "",
-                    "scene": null
-                },
-                {
-                    "name": "pages/like/like",
-                    "pathName": "pages/like/like",
-                    "query": "",
-                    "scene": null
-                }
-            ]
-        }
-    }
+  "setting": {
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "useApiHook": true,
+    "showShadowRootInWxmlPanel": true,
+    "useStaticServer": false,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "compileHotReLoad": true,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": true,
+    "bigPackageSizeSupport": false,
+    "useIsolateContext": true
+  },
+  "condition": {},
+  "libVersion": "3.16.2",
+  "projectname": "hexo-weapp-zhaoo"
 }

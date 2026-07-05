@@ -50,7 +50,7 @@
 
 ## 部署
 
-[小程序部署文档](https://www.izhaoo.com/2021/07/05/hexo-weapp-zhaoo-doc/)
+[小程序部署文档](https://www.caozhaoqi.github.io.com/2021/07/05/hexo-weapp-zhaoo-doc/)
 
 ### RESTful
 

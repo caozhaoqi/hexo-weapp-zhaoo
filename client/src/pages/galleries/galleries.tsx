@@ -14,21 +14,27 @@ const Galleries = () => {
   }, []);
 
   const fetchGalleriesData = async () => {
-    const res = await getGalleries();
-    setGalleries(res);
+    try {
+      const res = await getGalleries();
+      if (res && Array.isArray(res)) {
+        setGalleries(res);
+      }
+    } catch (e) {
+      console.error('Failed to fetch galleries:', e);
+    }
   };
 
   useShareTimeline(() => {
     return {
       title: '相册',
-      imageUrl: galleries[0].cover,
+      imageUrl: galleries.length > 0 ? galleries[0].cover : '',
     };
   });
 
   useShareAppMessage(() => {
     return {
       title: '相册',
-      imageUrl: galleries[0].cover,
+      imageUrl: galleries.length > 0 ? galleries[0].cover : '',
     };
   });
 

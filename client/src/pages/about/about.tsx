@@ -14,18 +14,18 @@ const About = () => {
           title='GitHub'
           icon='github'
           arrow
-          extraText='hexo-weapp-zhaoo'
+          extraText='Arona'
           onClick={
             () =>
               Taro.setClipboardData({
-                data: 'https://github.com/zhaoo/hexo-weapp-zhaoo',
+                data: 'https://caozhaoqi.github.io',
               })
             // Taro.navigateTo({
-            //   url: `/pages/webview/webview?url=https://github.com/zhaoo/hexo-weapp-zhaoo`,
+            //   url: `/pages/webview/webview?url=https://caozhaoqi.github.io`,
             // })
           }
         />
-        <List
+        {/* <List
           title='QQ群'
           icon='QQ'
           arrow
@@ -39,7 +39,7 @@ const About = () => {
             //   url: `/pages/webview/webview?url=https://qm.qq.com/cgi-bin/qm/qr?k=L0VjfLZ0MAzSuCjmrSf5H37FiVCndnA2&jump_from=webapi`,
             // })
           }
-        />
+        /> */}
       </View>
     </View>
   );

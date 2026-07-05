@@ -4,7 +4,7 @@ import { View } from '@tarojs/components';
 import Icon from '@/components/icon';
 import { leancloud } from '../../../../config.json';
 import AV from 'leancloud-storage/dist/av-weapp.js';
-import { getUserInfo, filterHtml } from '@/utils/index';
+import { getUserInfo, requestUserProfile, filterHtml } from '@/utils/index';
 import { IPostItem } from '@/types/post';
 import styles from './index.module.scss';
 
@@ -32,9 +32,10 @@ const FabLike: FC<IFabLikeProps> = ({
   }, []);
 
   const fetchCount = async () => {
+    const userInfo = await getUserInfo();
+    if (!userInfo) return;
     const query = new AV.Query(Counter);
-    const { nickName } = await getUserInfo();
-    query.equalTo('path', post.realPath).equalTo('nickName', nickName);
+    query.equalTo('path', post.realPath).equalTo('nickName', userInfo.nickName);
     const res: number = await query.count();
     if (res > 0) {
       setStatus(true);
@@ -42,8 +43,25 @@ const FabLike: FC<IFabLikeProps> = ({
   };
 
   const handleLike = async () => {
-    vibrateShort();
-    const { nickName, avatarUrl } = await getUserInfo();
+    try {
+      vibrateShort();
+    } catch (e) {
+      console.warn('vibrateShort not supported');
+    }
+    let userInfo = await getUserInfo();
+    if (!userInfo) {
+      try {
+        userInfo = await requestUserProfile();
+      } catch (e) {
+        showToast({
+          icon: 'none',
+          title: '请授权登录',
+          duration: 2000,
+        });
+        return;
+      }
+    }
+    const { nickName, avatarUrl } = userInfo;
     if (status) {
       if (!canRemove) {
         showToast({

@@ -59,7 +59,7 @@ const My = () => {
         <View className={styles.userWrapper}>
           <Image
             className={styles.backgroundImage}
-            src='https://caozhaoqi.github.io/medias/logo.png'
+            src='https://pic4.zhimg.com/80/v2-e434e3a2888fb4efb1844845b8791d1f_1440w.webp'
             style={bgStyle} // 修复 2：使用 style 绑定，代替失效的 bgRef
           />
           <View className={styles.user}>
@@ -115,7 +115,7 @@ const My = () => {
           </Button>
         </View>
         <View className={styles.listWrapper}>
-          {/* <List title='夜间模式' icon='moon' rightChildren={<ColorSwitch />} /> */}
+          <List title='夜间模式' icon='moon' rightChildren={<View />} />
           <List
             title='全部评论'
             icon='message'

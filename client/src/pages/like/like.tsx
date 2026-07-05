@@ -121,7 +121,7 @@ const Like = () => {
       {hasUserInfo && (hasMore ? (
         <LiteLoading text='正在加载...' icon='jingyu' />
       ) : (
-        <LiteLoading text='本来无一物，何处惹尘埃 ~' />
+        <LiteLoading text='忍把浮名去了，换作浅斟低唱' />
       ))}
     </View>
   );

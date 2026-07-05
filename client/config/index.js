@@ -30,7 +30,7 @@ const config = {
   copy: {
     patterns: [
       {
-        from: path.resolve(__dirname, '../../app.miniapp.json'),
+        from: path.resolve(__dirname, '../app.miniapp.json'),
         to: 'app.miniapp.json',
       },
     ],

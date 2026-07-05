@@ -20,13 +20,15 @@ import config from '../../../config.json';
 import './post.scss';
 
 const Post = () => {
-  const [post, setPost] = useState<IPostItem>({});
+  const [post, setPost] = useState<IPostItem>({} as IPostItem);
   const [status, setStatus] = useState<string>('loading');
   const [images, setImages] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [htmlChunks, setHtmlChunks] = useState<string[]>([]);
   const [slug] = useState<string>(
     getCurrentInstance().router?.params.slug || ''
   );
+  const CHUNK_SIZE = 5000;
 
   useEffect(() => {
     fetchPost();
@@ -34,15 +36,15 @@ const Post = () => {
 
   useShareTimeline(() => {
     return {
-      title: post.title,
-      imageUrl: post.cover,
+      title: post.title || '文章分享',
+      imageUrl: post.cover || '',
     };
   });
 
   useShareAppMessage(() => {
     return {
-      title: post.title,
-      imageUrl: post.cover,
+      title: post.title || '文章分享',
+      imageUrl: post.cover || '',
     };
   });
 
@@ -51,39 +53,97 @@ const Post = () => {
     if (data) {
       const { more, title } = data;
       Taro.setNavigationBarTitle({ title });
-      data.more = replaceHTML(more);
+      const { html, imagesArray } = replaceHTML(more);
+      data.more = html;
+      setImages(imagesArray);
       setPost(data);
       setStatus('ready');
       setHistoryStorage(data);
+      splitHtmlIntoChunks(html);
     }
+  };
+
+  const splitHtmlIntoChunks = (html: string) => {
+    if (!html) return;
+    const chunks: string[] = [];
+    for (let i = 0; i < html.length; i += CHUNK_SIZE) {
+      let end = i + CHUNK_SIZE;
+      if (end < html.length) {
+        const lastTagStart = html.lastIndexOf('<', end);
+        const lastTagEnd = html.lastIndexOf('>', end);
+        if (lastTagStart > lastTagEnd) {
+          end = html.indexOf('>', lastTagStart) + 1;
+        }
+      }
+      chunks.push(html.slice(i, end));
+      i = end - 1;
+    }
+    console.log('[post] HTML分段完成, 共', chunks.length, '段');
+    setHtmlChunks(chunks);
   };
 
   const getImageUrl = (src: string): string => {
-    if (src.startsWith('http://') || src.startsWith('https://')) {
-      return src;
+    if (!src) return '';
+    const decodedSrc = decodeURIComponent(src);
+    if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
+      if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
+        const cleanUrl = decodedSrc.split('?')[0];
+        console.log('[post] OSS签名URL已清理:', cleanUrl);
+        return cleanUrl;
+      }
+      return decodedSrc;
     }
     const baseHost = config.baseUrl.replace('/api', '');
-    return baseHost + src;
+    return baseHost + decodedSrc;
   };
 
-  const replaceHTML = (data) => {
-    data = data.replace(
+  const replaceHTML = (data: string): { html: string; imagesArray: string[] } => {
+    if (!data) return { html: '', imagesArray: [] };
+    
+    console.log('[post] 开始处理HTML内容, 原始长度:', data.length);
+    
+    const imagesArray: string[] = [];
+    
+    let html = data.replace(
       /<img([^>]*)src="([^"]*)"([^>]*)>/gim,
       (match, attrBegin, src: string, attrEnd) => {
         const fullUrl = getImageUrl(src);
-        const imagesTemp = images;
-        imagesTemp.push(fullUrl);
-        setImages(imagesTemp);
+        imagesArray.push(fullUrl);
         return `<img ${attrBegin} src='${fullUrl}' mode='widthFix' id='image_${fullUrl}' lazy-load ${attrEnd}>`;
       }
     );
-    data = data.replace(
+    
+    html = html.replace(
       /<a([^>]*)href="([^"]*)"([^>]*)>/gim,
       (match, attrBegin, href: string, attrEnd) => {
         return `<a ${attrBegin} id='link_${href}' ${attrEnd}>`;
       }
     );
-    return data;
+    
+    html = html.replace(
+      /<figure class="highlight ([^"]*)">([\s\S]*?)<\/figure>/gim,
+      (match, lang, content) => {
+        const cleanContent = content
+          .replace(/<td class="gutter">[\s\S]*?<\/td>/gi, '')
+          .replace(/<table[^>]*>/gi, '')
+          .replace(/<\/table>/gi, '')
+          .replace(/<tr[^>]*>/gi, '')
+          .replace(/<\/tr>/gi, '')
+          .replace(/<td class="code">/gi, '')
+          .replace(/<\/td>/gi, '')
+          .replace(/<span class="line">/gi, '')
+          .replace(/<\/span>/gi, '')
+          .trim();
+        
+        return `<pre class="language-${lang || 'plain'}">${cleanContent}</pre>`;
+      }
+    );
+    
+    html = html.replace(/<br\s*\/?>/gi, '\n');
+    
+    console.log('[post] HTML处理完成, 图片数量:', imagesArray.length);
+    
+    return { html, imagesArray };
   };
 
   // 存储历史文章
@@ -124,7 +184,7 @@ const Post = () => {
           <View className='head'>
             {post.cover ? (
               <Image
-                src={post.cover}
+                src={getImageUrl(post.cover)}
                 lazyLoad
                 className='cover'
                 mode='aspectFill'
@@ -168,12 +228,16 @@ const Post = () => {
               </View>
             </View>
           </View>
-          {post.more ? (
-            <View
-              dangerouslySetInnerHTML={{ __html: post.more }}
-              onClick={(e) => handleClick(e)}
-              className='content'
-            />
+          {htmlChunks.length > 0 ? (
+            <View className='content'>
+              {htmlChunks.map((chunk, index) => (
+                <View
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: chunk }}
+                  onClick={(e) => handleClick(e)}
+                />
+              ))}
+            </View>
           ) : null}
           {post.realPath ? <Comment url={post.realPath} /> : null}
           <Fab post={post} />

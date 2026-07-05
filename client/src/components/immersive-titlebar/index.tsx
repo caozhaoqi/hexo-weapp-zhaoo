@@ -20,13 +20,13 @@ const ImmersiveTitlebar: FC<IImmersiveTitlebarProps> = ({ title }) => {
     let customBar, headerBar;
     let rect = Taro.getMenuButtonBoundingClientRect();
     if (system.toLowerCase().indexOf('ios') > -1) {
-      customBar = rect.bottom + (rect.top - statusBarHeight) * 2;
-      headerBar = customBar - statusBarHeight;
+      customBar = rect.bottom + (rect.top - (statusBarHeight || 0)) * 2;
+      headerBar = customBar - (statusBarHeight || 0);
     } else {
-      headerBar = rect.height + (rect.top - statusBarHeight) * 2;
+      headerBar = rect.height + (rect.top - (statusBarHeight || 0) * 2);
       customBar = headerBar + statusBarHeight;
     }
-    setTitlebarHeight([headerBar, statusBarHeight, customBar]);
+    setTitlebarHeight([headerBar, statusBarHeight || 0, customBar]);
   }, []);
 
   usePageScroll(({ scrollTop }) => {

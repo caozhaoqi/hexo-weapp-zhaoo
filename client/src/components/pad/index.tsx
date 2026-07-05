@@ -8,6 +8,7 @@ interface IPadProps {
   height?: number | string;
   containerStyle?: CSSProperties;
   contentStyle?: CSSProperties;
+  children?: React.ReactNode;
 }
 
 const Pad: FC<IPadProps> = ({

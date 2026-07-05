@@ -199,7 +199,7 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
             </View>
           </View>
         </View>
-      </Pad>
+     </Pad>
     </>
   );
 };

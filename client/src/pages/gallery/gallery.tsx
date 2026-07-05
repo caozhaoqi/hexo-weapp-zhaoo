@@ -10,8 +10,8 @@ import { IGalleryItem } from '@/types/gallery';
 import './gallery.scss';
 
 const Gallery = () => {
-  const { name } = getCurrentInstance()?.router?.params;
-  const [gallery, setGallery] = useState<IGalleryItem>(null);
+  const { name } = getCurrentInstance()?.router?.params || {};
+  const [gallery, setGallery] = useState<IGalleryItem | null>(null);
 
   useEffect(() => {
     fetchGalleryData();
@@ -32,7 +32,7 @@ const Gallery = () => {
   });
 
   const fetchGalleryData = async () => {
-    Taro.setNavigationBarTitle({ title: name });
+    Taro.setNavigationBarTitle({ title: name || '' });
     const data = await getGalleryByName(name);
     setGallery(data);
   };
@@ -40,7 +40,7 @@ const Gallery = () => {
   const handlePreviewImage = (current: string) => {
     Taro.previewImage({
       current,
-      urls: gallery.photos,
+      urls: gallery?.photos || [],
     });
   };
 

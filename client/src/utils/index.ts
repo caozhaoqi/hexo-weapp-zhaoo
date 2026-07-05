@@ -44,7 +44,15 @@ export const requestUserProfile = async (): Promise<{
   });
   const { userInfo } = res;
   setStorageSync('userinfo', userInfo);
-  return userInfo;
+  return {
+    avatarUrl: userInfo.avatarUrl || '',
+    nickName: userInfo.nickName || '',
+    city: userInfo.city || '',
+    country: userInfo.country || '',
+    gender: userInfo.gender ?? 0,
+    language: userInfo.language || '',
+    province: userInfo.province || '',
+  };
 };
 
 export const filterHtml = (str) => {

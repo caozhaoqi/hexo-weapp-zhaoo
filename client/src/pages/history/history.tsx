@@ -49,7 +49,7 @@ const History = () => {
               />
             ))
         : null}
-      <LiteLoading text='本来无一物，何处惹尘埃 ~' />
+      <LiteLoading text='~' />
     </View>
   );
 };

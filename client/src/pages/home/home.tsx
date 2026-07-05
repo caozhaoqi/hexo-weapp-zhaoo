@@ -22,7 +22,7 @@ const Home = () => {
           ))
         : null}
       {isLoading ? <LiteLoading text='正在加载...' icon='jingyu' /> : null}
-      {!hasMore ? <LiteLoading text='忍吧浮名去了，换作浅斟低唱~' /> : null}
+      {!hasMore ? <LiteLoading text='忍把浮名去了，换作浅斟低唱~' /> : null}
     </ScrollView>
   );
 };

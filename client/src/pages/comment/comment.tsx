@@ -60,7 +60,7 @@ const Comment = () => {
       {hasMore ? (
         <LiteLoading text='正在加载...' icon='jingyu' />
       ) : (
-        <LiteLoading text='本来无一物，何处惹尘埃 ~' />
+        <LiteLoading text=' ~' />
       )}
     </View>
   );

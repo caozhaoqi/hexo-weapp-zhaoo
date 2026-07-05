@@ -16,8 +16,16 @@ export const getCategories = () => {
   return get(`/categories.json`, {}, {}, true, true, 'categories_cache');
 };
 
-export const getGalleries = () => {
-  return get(`/galleries.json`, {}, {}, true, true, 'galleries_cache');
+export const getGalleries = async () => {
+  try {
+    const result = await get(`/galleries.json`, {}, {}, true, true, 'galleries_cache');
+    if (result) {
+      return result;
+    }
+  } catch (e) {
+    console.warn('[API] galleries.json 加载失败，使用空数据');
+  }
+  return [];
 };
 
 export const getGalleryByName = (name) => {

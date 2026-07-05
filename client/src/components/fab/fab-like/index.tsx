@@ -2,9 +2,7 @@ import { useEffect, useState, FC } from 'react';
 import Taro, { showToast, vibrateShort } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import Icon from '@/components/icon';
-import { leancloud } from '../../../../config.json';
-import AV from 'leancloud-storage/dist/av-weapp.js';
-import { getUserInfo, requestUserProfile, filterHtml } from '@/utils/index';
+import { getUserInfo, requestUserProfile, filterHtml, addLike, removeLike, isLiked, ILikeData } from '@/utils/index';
 import { IPostItem } from '@/types/post';
 import styles from './index.module.scss';
 
@@ -14,10 +12,6 @@ interface IFabLikeProps {
   active: boolean;
   canRemove?: boolean;
 }
-
-const { appId, appKey, serverURLs } = leancloud;
-AV.init({ appId, appKey, serverURLs });
-const Counter = AV.Object.extend('Like');
 
 const FabLike: FC<IFabLikeProps> = ({
   post,
@@ -34,12 +28,8 @@ const FabLike: FC<IFabLikeProps> = ({
   const fetchCount = async () => {
     const userInfo = await getUserInfo();
     if (!userInfo) return;
-    const query = new AV.Query(Counter);
-    query.equalTo('path', post.realPath).equalTo('nickName', userInfo.nickName);
-    const res: number = await query.count();
-    if (res > 0) {
-      setStatus(true);
-    }
+    const isUserLiked = isLiked(post.realPath || '', userInfo.nickName);
+    setStatus(isUserLiked);
   };
 
   const handleLike = async () => {
@@ -78,27 +68,28 @@ const FabLike: FC<IFabLikeProps> = ({
     setTimeout(() => Taro.eventCenter.trigger('refreshLeancloud', 'Like'), 100);
   };
 
-  const addCount = async (nickName: string, weappAvatar: string) => {
-    const query = new Counter();
-    query
-      .save({
-        nickName,
-        weappAvatar,
-        slug: post.slug,
-        path: post.realPath,
-        title: post.title,
-        excerpt: post.excerpt || filterHtml(post.content).substr(0, 50),
-        cover: post.cover,
-      })
-      .then(() => setStatus(true));
+  const addCount = async (nickName: string, avatarUrl: string) => {
+    const likeData: ILikeData = {
+      nickName,
+      avatarUrl,
+      slug: post.slug,
+      path: post.realPath || '',
+      title: post.title,
+      excerpt: post.excerpt || filterHtml(post.content || '').substr(0, 50),
+      cover: post.cover,
+      createdAt: new Date().toISOString(),
+    };
+    const success = addLike(likeData);
+    if (success) {
+      setStatus(true);
+    }
   };
 
   const removeCount = async (nickName: string) => {
-    const query = new AV.Query(Counter);
-    query.find({ path: post.path, nickName }).then((res) => {
-      res[0].destroy();
+    const success = removeLike(post.realPath || '', nickName);
+    if (success) {
       setStatus(false);
-    });
+    }
   };
 
   return (

@@ -1,10 +1,33 @@
-import Taro from '@tarojs/taro';
+import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 import List from '@/components/list';
 import logo from '@/assets/images/logo.png';
 import styles from './about.module.scss';
 
+const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
+
 const About = () => {
+  useShareTimeline(() => {
+    return {
+      title: '关于应用',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+    };
+  });
+
+  useShareAppMessage(() => {
+    return {
+      title: '关于应用',
+      path: '/pages/about/about',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
+    };
+  });
+
   return (
     <View className={styles.about}>
       <Image className={styles.logo} src={logo} mode='aspectFill' />

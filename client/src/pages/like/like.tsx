@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useReachBottom, showToast } from '@tarojs/taro';
+import { useReachBottom, showToast, useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import { View, Text, Button } from '@tarojs/components';
 import LiteLoading from '@/components/lite-loading';
 import PostList from '@/components/post-list';
 import Icon from '@/components/icon';
-import { getUserInfo, requestUserProfile } from '@/utils/index';
-import AV from 'leancloud-storage/dist/av-weapp.js';
-import { leancloud } from '../../../config.json';
+import { getUserInfo, requestUserProfile, getLikes, ILikeData } from '@/utils/index';
 import { formateDate } from '@/utils/index';
 import styles from './like.module.scss';
 
-const { appId, appKey, serverURLs } = leancloud;
-AV.init({ appId, appKey, serverURLs });
-const pageSize = 20;
+const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
 interface ILikeItem {
   cover: string;
@@ -24,8 +20,6 @@ interface ILikeItem {
 
 const Like = () => {
   const [list, setList] = useState<ILikeItem[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [count, setCount] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
   const [nickName, setNickName] = useState<string>('');
@@ -36,7 +30,27 @@ const Like = () => {
 
   useReachBottom(() => {
     if (!hasMore || !hasUserInfo) return;
-    setCurrentPage(currentPage + 1);
+  });
+
+  useShareTimeline(() => {
+    return {
+      title: '我的收藏',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+    };
+  });
+
+  useShareAppMessage(() => {
+    return {
+      title: '我的收藏',
+      path: '/pages/like/like',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
+    };
   });
 
   const checkUserInfo = async () => {
@@ -64,27 +78,19 @@ const Like = () => {
   };
 
   const fetchData = async (userNickName: string) => {
-    AV.Query.doCloudQuery(
-      `select count(*), * from Like where nickName = '${userNickName}' limit ${
-        currentPage * pageSize
-      },${pageSize} order by createdAt desc`
-    )
-      .then(({ results, count }) => {
-        setList(
-          list.concat(
-            results.map((item) => {
-              const temp = item.attributes;
-              temp.createdAt = item.createdAt;
-              return temp;
-            })
-          )
-        );
-        setCount(count);
-        if (count <= (currentPage + 1) * pageSize) {
-          setHasMore(false);
-        }
-      })
-      .catch();
+    const likes: ILikeData[] = getLikes();
+    const userLikes = likes.filter((like) => like.nickName === userNickName);
+    const sortedLikes = userLikes.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    setList(sortedLikes.map((item) => ({
+      cover: item.cover,
+      title: item.title,
+      slug: item.slug,
+      excerpt: item.excerpt,
+      createdAt: item.createdAt,
+    })));
+    setHasMore(false);
   };
 
   const renderInfoList = (item: ILikeItem) => {

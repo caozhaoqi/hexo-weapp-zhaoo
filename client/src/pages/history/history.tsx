@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import LiteLoading from '@/components/lite-loading';
 import PostList from '@/components/post-list';
@@ -6,6 +7,8 @@ import Icon from '@/components/icon';
 import { getStorageSync } from '@/utils/storage';
 import { formateDate } from '@/utils/index';
 import styles from './history.module.scss';
+
+const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
 interface IHistoryItem {
   cover: string;
@@ -21,6 +24,27 @@ const History = () => {
   useEffect(() => {
     setHistories(getStorageSync('history'));
   }, []);
+
+  useShareTimeline(() => {
+    return {
+      title: '浏览历史',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+    };
+  });
+
+  useShareAppMessage(() => {
+    return {
+      title: '浏览历史',
+      path: '/pages/history/history',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
+    };
+  });
 
   const renderInfoList = (item: IHistoryItem) => {
     return (

@@ -19,6 +19,8 @@ import { IPostItem } from '@/types/post';
 import config from '../../../config.json';
 import './post.scss';
 
+const DEFAULT_COVER = '/assets/images/logo.png';
+
 const Post = () => {
   const [post, setPost] = useState<IPostItem>({} as IPostItem);
   const [status, setStatus] = useState<string>('loading');
@@ -37,14 +39,21 @@ const Post = () => {
   useShareTimeline(() => {
     return {
       title: post.title || '文章分享',
-      imageUrl: post.cover || '',
+      imageUrl: post.cover || DEFAULT_COVER,
     };
   });
 
   useShareAppMessage(() => {
     return {
       title: post.title || '文章分享',
-      imageUrl: post.cover || '',
+      path: `/pages/post/post?slug=${slug}`,
+      imageUrl: post.cover || DEFAULT_COVER,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
     };
   });
 
@@ -78,17 +87,15 @@ const Post = () => {
       chunks.push(html.slice(i, end));
       i = end - 1;
     }
-    console.log('[post] HTML分段完成, 共', chunks.length, '段');
     setHtmlChunks(chunks);
   };
 
   const getImageUrl = (src: string): string => {
-    if (!src) return '';
+    if (!src) return DEFAULT_COVER;
     const decodedSrc = decodeURIComponent(src);
     if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
       if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
         const cleanUrl = decodedSrc.split('?')[0];
-        console.log('[post] OSS签名URL已清理:', cleanUrl);
         return cleanUrl;
       }
       return decodedSrc;
@@ -99,8 +106,6 @@ const Post = () => {
 
   const replaceHTML = (data: string): { html: string; imagesArray: string[] } => {
     if (!data) return { html: '', imagesArray: [] };
-    
-    console.log('[post] 开始处理HTML内容, 原始长度:', data.length);
     
     const imagesArray: string[] = [];
     
@@ -140,13 +145,15 @@ const Post = () => {
     );
     
     html = html.replace(/<br\s*\/?>/gi, '\n');
-    
-    console.log('[post] HTML处理完成, 图片数量:', imagesArray.length);
+    html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+    html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+    html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+    html = html.replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '');
+    html = html.replace(/<canvas[^>]*>[\s\S]*?<\/canvas>/gi, '');
     
     return { html, imagesArray };
   };
 
-  // 存储历史文章
   const setHistoryStorage = (data) => {
     const key = 'history';
     const arr = getStorageSync(key) || [];
@@ -160,7 +167,6 @@ const Post = () => {
   };
 
   const handleClick = (e) => {
-    // 图片模态框
     const imageMatch = e.target.id.match(/(?<=image_).*/gi);
     const linkMatch = e.target.id.match(/(?<=link_).*/gi);
     if (imageMatch) {
@@ -182,14 +188,12 @@ const Post = () => {
         <View className='post'>
           <ImmersiveTitlebar title={post.title || ''} />
           <View className='head'>
-            {post.cover ? (
-              <Image
-                src={getImageUrl(post.cover)}
-                lazyLoad
-                className='cover'
-                mode='aspectFill'
-              />
-            ) : null}
+            <Image
+              src={getImageUrl(post.cover)}
+              lazyLoad
+              className='cover'
+              mode='aspectFill'
+            />
             <View className='mask'>
               <Text className='title'>{post.title}</Text>
               <View className='info'>

@@ -12,6 +12,7 @@ const config = {
     '@/styles': path.resolve(__dirname, '..', 'src/styles'),
     '@/apis': path.resolve(__dirname, '..', 'src/apis'),
     '@/types': path.resolve(__dirname, '..', 'src/types'),
+    '@/contexts': path.resolve(__dirname, '..', 'src/contexts'),
   },
   sass: {
     resource: ['src/styles/variable.scss', 'src/styles/reset.scss'],

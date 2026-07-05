@@ -5,12 +5,10 @@ import { IPostItem } from '@/types/post';
 import { baseUrl } from '../../../config.json';
 import styles from './index.module.scss';
 
-interface IPostItemProps {
-  data: IPostItem;
-}
+const DEFAULT_COVER = '/assets/images/logo.png';
 
 const getImageUrl = (src: string): string => {
-  if (!src) return '';
+  if (!src) return DEFAULT_COVER;
   const decodedSrc = decodeURIComponent(src);
   if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
     if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
@@ -23,11 +21,13 @@ const getImageUrl = (src: string): string => {
   return baseHost + decodedSrc;
 };
 
+interface IPostItemProps {
+  data: IPostItem;
+}
+
 const PostItem: FC<IPostItemProps> = ({ data }) => {
   const { title = '', cover, excerpt = '', slug, top } = data;
   const coverUrl = getImageUrl(cover);
-  
-  console.log('[post-item] 文章:', title, ', 封面:', cover, ', 处理后:', coverUrl);
   
   return (
     <View
@@ -35,14 +35,12 @@ const PostItem: FC<IPostItemProps> = ({ data }) => {
       onClick={() => Taro.navigateTo({ url: `/pages/post/post?slug=${slug}` })}
     >
       {top ? <View className={styles.top} /> : null}
-      {coverUrl ? (
-        <Image
-          className={styles.cover}
-          src={coverUrl}
-          lazyLoad
-          mode='aspectFill'
-        />
-      ) : null}
+      <Image
+        className={styles.cover}
+        src={coverUrl}
+        lazyLoad
+        mode='aspectFill'
+      />
       <View className={styles.content}>
         <Text className={styles.title}>{title}</Text>
         <Text className={styles.excerpt}>{excerpt}</Text>

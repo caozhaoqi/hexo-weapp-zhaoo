@@ -13,10 +13,7 @@ import CommentList from '@/components/comment-list';
 import LiteLoading from '@/components/lite-loading';
 import Pad from '@/components/pad';
 import Icon from '@/components/icon';
-import { get } from '@/apis/request';
-import AV from 'leancloud-storage/dist/av-weapp.js';
-import { leancloud } from '../../../config.json';
-import { getUserInfo, requestUserProfile } from '@/utils/index';
+import { getUserInfo, requestUserProfile, getComments, addComment, ICommentData } from '@/utils/index';
 import styles from './index.module.scss';
 
 interface ICommentProps {
@@ -24,12 +21,8 @@ interface ICommentProps {
   url: string;
 }
 
-const { appId, appKey, serverURLs } = leancloud;
-AV.init({ appId, appKey, serverURLs });
-
-const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
-  const Model = AV.Object.extend(model);
-  const [list, setList] = useState<any[]>([]);
+const Comment: FC<ICommentProps> = ({ url }) => {
+  const [list, setList] = useState<ICommentData[]>([]);
   const [commentVisible, setCommentVisible] = useState<boolean>(false);
   const [commentValue, setCommentValue] = useState<string>('');
 
@@ -44,26 +37,8 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
   }, []);
 
   const fetchData = () => {
-    try {
-      Taro.cloud
-        .callFunction({
-          name: 'comment',
-          data: {
-            appId,
-            appKey,
-            serverURLs,
-            sql: `select * from Comment where url = '${url}' order by createdAt desc`,
-          },
-        })
-        .then(({ result }: any) => {
-          if (result && result.success) {
-            setList(result.data);
-          }
-        })
-        .catch(() => {});
-    } catch (e) {
-      console.warn('Cloud API not available');
-    }
+    const comments = getComments(url);
+    setList(comments);
   };
 
   const sendComment = async () => {
@@ -83,28 +58,15 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
     }
     const { avatarUrl, nickName } = userInfo;
     try {
-      const ipRes = await get(
-        'https://pv.sohu.com/cityjson?ie=utf-8',
-        {},
-        {},
-        false
-      );
-      const ip = ipRes
-        .split(' ')[4]
-        .replace('"', '')
-        .replace('"', '')
-        .replace(',', '');
-      const query = new Model();
-      query.save({
+      const commentData: ICommentData = {
         url,
         comment: `<p>${commentValue}</p>`,
-        mail: '',
         nick: nickName,
-        insertedAt: new Date(),
         weappAvatar: avatarUrl,
-        ua: window.navigator.userAgent,
-        ip,
-      });
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      addComment(commentData);
       setCommentValue('');
       showToast({
         title: '评论成功',
@@ -179,7 +141,6 @@ const Comment: FC<ICommentProps> = ({ model = 'Comment', url }) => {
               {commentValue ? (
                 <Button
                   className={styles.send}
-                  openType='getUserInfo'
                   onClick={() => sendComment()}
                 >
                   <Icon

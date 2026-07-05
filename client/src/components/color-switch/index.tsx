@@ -1,24 +1,24 @@
 import { FC, useState, useEffect } from 'react';
 import { View } from '@tarojs/components';
+import { useTheme } from '../../contexts/theme';
 import styles from './index.module.scss';
 
-interface ColorSwitchProps {
-  checked?: boolean;
-  onChange?: (boolean) => void;
-}
-
-const ColorSwitch: FC<ColorSwitchProps> = ({ checked = false, onChange }) => {
-  const [state, setState] = useState<boolean>(checked);
+const ColorSwitch: FC = () => {
+  const { theme, toggleTheme } = useTheme();
+  const [state, setState] = useState<boolean>(theme === 'dark');
 
   useEffect(() => {
-    if (!onChange) return;
-    onChange(state);
-  }, [state]);
+    setState(theme === 'dark');
+  }, [theme]);
+
+  const handleToggle = () => {
+    toggleTheme();
+  };
 
   return (
     <View
       className={`${styles.colorSwitch} ${state ? styles.night : styles.day}`}
-      onClick={() => setState(!state)}
+      onClick={handleToggle}
     >
       <View className={styles.knob} />
     </View>

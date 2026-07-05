@@ -1,16 +1,33 @@
-import { useShareAppMessage } from '@tarojs/taro';
+import { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
 import usePagination from '@/hooks/usePagination';
 import PostItem from '@/components/post-item';
 import LiteLoading from '@/components/lite-loading';
 import './home.scss';
 
+const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
+
 const Home = () => {
   const [posts, hasMore, isLoading] = usePagination();
+
+  useShareTimeline(() => {
+    return {
+      title: 'Arona share a post to you！',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+    };
+  });
 
   useShareAppMessage(() => {
     return {
       title: 'Arona share a post to you！',
+      path: '/pages/home/home',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
     };
   });
 

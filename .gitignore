@@ -11,3 +11,6 @@ client/dist
 client/dist
 client/node_modules
 logs.log
+/client/dist/
+.idea/
+client/.swc/

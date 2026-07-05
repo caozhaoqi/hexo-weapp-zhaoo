@@ -32,6 +32,7 @@
       "@/styles/*": ["src/styles/*"],
       "@/apis/*": ["src/apis/*"],
       "@/types/*": ["src/types/*"],
+      "@/contexts/*": ["src/contexts/*"],
     }
   },
   "exclude": [

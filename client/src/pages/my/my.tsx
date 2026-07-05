@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'; // 移除了 useRef，改用数据驱动
-import Taro from '@tarojs/taro';
+import { useState, useEffect } from 'react';
+import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import {
   View,
   Image,
@@ -11,9 +11,12 @@ import {
 import Icon from '@/components/icon';
 import List from '@/components/list';
 import Donate from '@/components/donate';
+import ColorSwitch from '@/components/color-switch';
 import { get } from '@/apis/request';
 import { webUrl, motto } from '../../../config.json';
 import styles from './my.module.scss';
+
+const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
 const My = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -22,8 +25,28 @@ const My = () => {
 
   useEffect(() => {
     fetchMotto();
-    // banner3d();
   }, []);
+
+  useShareTimeline(() => {
+    return {
+      title: '我的主页',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+    };
+  });
+
+  useShareAppMessage(() => {
+    return {
+      title: '我的主页',
+      path: '/pages/my/my',
+      imageUrl: DEFAULT_SHARE_IMAGE,
+      webpageUrl: '',
+      userName: '',
+      imagePath: '',
+      withShareTicket: false,
+      miniprogramType: 0,
+      scene: 0,
+    };
+  });
 
   const banner3d = () => {
     Taro.startDeviceMotionListening({
@@ -43,7 +66,6 @@ const My = () => {
       .catch();
   };
 
-  // 💡 优化：计算动画样式，用于声明式绑定（代替直接操作 DOM Style）
   const bgStyle = {
     transform: `translateX(${motion[0] / 9}px)`
   };
@@ -53,14 +75,14 @@ const My = () => {
   };
 
   return (
-    <> {/* 修复 1：补齐了返回体开头缺失的 React Fragment 空标签 '<>' */}
+    <>
       <OfficialAccount className={styles.officialAccount} />
       <View className={styles.my}>
         <View className={styles.userWrapper}>
           <Image
             className={styles.backgroundImage}
             src='https://pic4.zhimg.com/80/v2-e434e3a2888fb4efb1844845b8791d1f_1440w.webp'
-            style={bgStyle} // 修复 2：使用 style 绑定，代替失效的 bgRef
+            style={bgStyle}
           />
           <View className={styles.user}>
             <View className={styles.avatar}>
@@ -74,7 +96,7 @@ const My = () => {
             </View>
           </View>
         </View>
-        <View className={styles.tabnav} style={bannerStyle}> {/* 修复 2：使用 style 绑定 */}
+        <View className={styles.tabnav} style={bannerStyle}>
           <View
             className={styles.tabnavItem}
             onClick={() => Taro.navigateTo({ url: `/pages/history/history` })}
@@ -82,7 +104,7 @@ const My = () => {
             <Icon type='image' name='tag' size={30} />
             <Text className={styles.text}>收藏</Text>
           </View>
-          <View className={styles.divide} /> {/* 修复 3：将小写 <view> 统一改为大写内置组件 <View> */}
+          <View className={styles.divide} />
           <View
             className={styles.tabnavItem}
             onClick={() => Taro.navigateTo({ url: `/pages/like/like` })}
@@ -90,7 +112,7 @@ const My = () => {
             <Icon type='image' name='like' size={30} />
             <Text className={styles.text}>喜欢</Text>
           </View>
-          <View className={styles.divide} /> {/* 修复 3：将小写 <view> 统一改为大写内置组件 <View> */}
+          <View className={styles.divide} />
           <View
             className={styles.tabnavItem}
             onClick={() => {
@@ -100,7 +122,7 @@ const My = () => {
             <Icon type='image' name='reward' size={30} />
             <Text className={styles.text}>打赏</Text>
           </View>
-          <View className={styles.divide} /> {/* 修复 3：将小写 <view> 统一改为大写内置组件 <View> */}
+          <View className={styles.divide} />
           <Button
             className={styles.tabnavItem}
             openType='share'
@@ -115,7 +137,7 @@ const My = () => {
           </Button>
         </View>
         <View className={styles.listWrapper}>
-          <List title='夜间模式' icon='moon' rightChildren={<View />} />
+          <List title='夜间模式' icon='moon' rightChildren={<ColorSwitch />} />
           <List
             title='全部评论'
             icon='message'

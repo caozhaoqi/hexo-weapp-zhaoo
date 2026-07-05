@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import Taro from '@tarojs/taro';
-import AV from 'leancloud-storage/dist/av-weapp.js';
-import { leancloud } from '../../../config.json';
+import { getLikes, getComments, getCounter, incrementCounter } from '@/utils/index';
 
 interface ILeancloudProps {
   path: string;
@@ -10,16 +9,12 @@ interface ILeancloudProps {
   field?: string;
 }
 
-const { appId, appKey, serverURLs } = leancloud;
-AV.init({ appId, appKey, serverURLs });
-
 const Leancloud: FC<ILeancloudProps> = ({
   model = 'Counter',
   path,
   exp = true,
   field = 'words',
 }) => {
-  const Model = AV.Object.extend(model);
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
@@ -37,15 +32,22 @@ const Leancloud: FC<ILeancloudProps> = ({
     };
   }, []);
 
-  const fetchCount = async () => {
-    const query = new AV.Query(Model);
-    const res = await query.equalTo(field, path).count();
-    setCount(res);
+  const fetchCount = () => {
+    let result = 0;
+    if (model === 'Like') {
+      result = getLikes(path).length;
+    } else if (model === 'Comment') {
+      result = getComments(path).length;
+    } else {
+      result = getCounter(path);
+    }
+    setCount(result);
   };
 
-  const addCount = async () => {
-    const query = new Model();
-    query.save({ words: path });
+  const addCount = () => {
+    if (model === 'Counter') {
+      incrementCounter(path);
+    }
   };
 
   return <>{count}</>;

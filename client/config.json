@@ -15,6 +15,6 @@
   },
   "motto": {
     "api": "https://v1.hitokoto.cn/?encode=text&c=i",
-    "default": "我在开了灯的床头下，想问问自己的心啊。"
+    "default": "～"
   }
 }

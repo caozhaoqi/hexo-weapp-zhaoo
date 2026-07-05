@@ -1,0 +1,1 @@
+cd /Users/caozhaoqi/PycharmProjects/hexo-weapp-zhaoo/client && NODE_OPTIONS=--openssl-legacy-provider npm run build:weapp

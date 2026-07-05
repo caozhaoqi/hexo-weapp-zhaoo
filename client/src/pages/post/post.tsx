@@ -4,7 +4,7 @@ import Taro, {
   useShareTimeline,
   useShareAppMessage,
 } from '@tarojs/taro';
-import { View, Image, Text } from '@tarojs/components';
+import { View, Image, Text, ScrollView } from '@tarojs/components';
 import { formateDate } from '@/utils/index';
 import { getPostBySlug } from '@/apis/api';
 import { getStorageSync, setStorageSync } from '@/utils/storage';
@@ -26,11 +26,10 @@ const Post = () => {
   const [status, setStatus] = useState<string>('loading');
   const [images, setImages] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [htmlChunks, setHtmlChunks] = useState<string[]>([]);
+  const [renderItems, setRenderItems] = useState<{ type: 'text' | 'code'; content: string; lang?: string; lines?: { text: string; spans: { text: string; color?: string }[] }[] }[]>([]);
   const [slug] = useState<string>(
     getCurrentInstance().router?.params.slug || ''
   );
-  const CHUNK_SIZE = 5000;
 
   useEffect(() => {
     fetchPost();
@@ -62,32 +61,14 @@ const Post = () => {
     if (data) {
       const { more, title } = data;
       Taro.setNavigationBarTitle({ title });
-      const { html, imagesArray } = replaceHTML(more);
-      data.more = html;
+      const { items, imagesArray } = parseHTML(more);
+      data.more = more;
       setImages(imagesArray);
       setPost(data);
       setStatus('ready');
       setHistoryStorage(data);
-      splitHtmlIntoChunks(html);
+      setRenderItems(items);
     }
-  };
-
-  const splitHtmlIntoChunks = (html: string) => {
-    if (!html) return;
-    const chunks: string[] = [];
-    for (let i = 0; i < html.length; i += CHUNK_SIZE) {
-      let end = i + CHUNK_SIZE;
-      if (end < html.length) {
-        const lastTagStart = html.lastIndexOf('<', end);
-        const lastTagEnd = html.lastIndexOf('>', end);
-        if (lastTagStart > lastTagEnd) {
-          end = html.indexOf('>', lastTagStart) + 1;
-        }
-      }
-      chunks.push(html.slice(i, end));
-      i = end - 1;
-    }
-    setHtmlChunks(chunks);
   };
 
   const getImageUrl = (src: string): string => {
@@ -104,10 +85,37 @@ const Post = () => {
     return baseHost + decodedSrc;
   };
 
-  const replaceHTML = (data: string): { html: string; imagesArray: string[] } => {
-    if (!data) return { html: '', imagesArray: [] };
+  const decodeHtmlEntities = (str: string): string => {
+    let result = str;
+    result = result.replace(/&#123;/g, '{');
+    result = result.replace(/&#125;/g, '}');
+    result = result.replace(/&#61;/g, '=');
+    result = result.replace(/&#38;/g, '&');
+    result = result.replace(/&#39;/g, "'");
+    result = result.replace(/&#34;/g, '"');
+    result = result.replace(/&#60;/g, '<');
+    result = result.replace(/&#62;/g, '>');
+    result = result.replace(/&#47;/g, '/');
+    result = result.replace(/&#96;/g, '`');
+    result = result.replace(/&#x27;/gi, "'");
+    result = result.replace(/&#x3D;/gi, '=');
+    result = result.replace(/&#x2F;/gi, '/');
+    result = result.replace(/&#x60;/gi, '`');
+    result = result.replace(/&#x3C;/gi, '<');
+    result = result.replace(/&#x3E;/gi, '>');
+    result = result.replace(/&lt;/gi, '<');
+    result = result.replace(/&gt;/gi, '>');
+    result = result.replace(/&nbsp;/gi, ' ');
+    result = result.replace(/&amp;/gi, '&');
+    result = result.replace(/&quot;/gi, '"');
+    return result;
+  };
+
+  const parseHTML = (data: string): { items: { type: 'text' | 'code'; content: string; lang?: string; lines?: { text: string; spans: { text: string; color?: string }[] }[] }[]; imagesArray: string[] } => {
+    if (!data) return { items: [], imagesArray: [] };
     
     const imagesArray: string[] = [];
+    const items: { type: 'text' | 'code'; content: string; lang?: string; lines?: { text: string; spans: { text: string; color?: string }[] }[] }[] = [];
     
     let html = data.replace(
       /<img([^>]*)src="([^"]*)"([^>]*)>/gim,
@@ -125,33 +133,95 @@ const Post = () => {
       }
     );
     
-    html = html.replace(
-      /<figure class="highlight ([^"]*)">([\s\S]*?)<\/figure>/gim,
-      (match, lang, content) => {
-        const cleanContent = content
-          .replace(/<td class="gutter">[\s\S]*?<\/td>/gi, '')
-          .replace(/<table[^>]*>/gi, '')
-          .replace(/<\/table>/gi, '')
-          .replace(/<tr[^>]*>/gi, '')
-          .replace(/<\/tr>/gi, '')
-          .replace(/<td class="code">/gi, '')
-          .replace(/<\/td>/gi, '')
-          .replace(/<span class="line">/gi, '')
-          .replace(/<\/span>/gi, '')
-          .trim();
-        
-        return `<pre class="language-${lang || 'plain'}">${cleanContent}</pre>`;
-      }
-    );
-    
-    html = html.replace(/<br\s*\/?>/gi, '\n');
     html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
     html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
     html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
     html = html.replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '');
     html = html.replace(/<canvas[^>]*>[\s\S]*?<\/canvas>/gi, '');
     
-    return { html, imagesArray };
+    const codeBlockRegex = /<figure class="highlight ([^"]*)">([\s\S]*?)<\/figure>/gim;
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = codeBlockRegex.exec(html)) !== null) {
+      if (match.index > lastIndex) {
+        const textContent = html.slice(lastIndex, match.index);
+        const cleanedText = textContent
+          .replace(/<br\s*\/?>/gi, '\n')
+          .trim();
+        if (cleanedText) {
+          items.push({ type: 'text', content: cleanedText });
+        }
+      }
+      
+      const lang = match[1];
+      let codeContent = match[2]
+        .replace(/<td class="gutter">[\s\S]*?<\/td>/gi, '')
+        .replace(/<table[^>]*>/gi, '')
+        .replace(/<\/table>/gi, '')
+        .replace(/<tr[^>]*>/gi, '')
+        .replace(/<\/tr>/gi, '')
+        .replace(/<td class="code">/gi, '')
+        .replace(/<\/td>/gi, '')
+        .trim();
+      
+      codeContent = decodeHtmlEntities(codeContent);
+      
+      codeContent = codeContent.replace(/<pre[^>]*>/gi, '').replace(/<\/pre>/gi, '');
+      
+      const lineRegex = /<span class="line">([\s\S]*?)<\/span>/gi;
+      const parsedLines: { text: string; spans: { text: string; color?: string }[] }[] = [];
+      let lineMatch;
+      
+      while ((lineMatch = lineRegex.exec(codeContent)) !== null) {
+        const lineContent = lineMatch[1].trim();
+        if (!lineContent) continue;
+        
+        const spans: { text: string; color?: string }[] = [];
+        const spanRegex = /<span class="([^"]+)">([^<]*)<\/span>/gi;
+        let spanMatch;
+        let lastSpanIndex = 0;
+        
+        while ((spanMatch = spanRegex.exec(lineContent)) !== null) {
+          if (spanMatch.index > lastSpanIndex) {
+            spans.push({ text: lineContent.slice(lastSpanIndex, spanMatch.index) });
+          }
+          
+          const className = spanMatch[1];
+          let color = '#d4d4d4';
+          if (className.match(/keyword|selector-tag|built_in|name|tag/)) color = '#569cd6';
+          else if (className.match(/string|title|section|attribute|literal|template-tag|template-variable|type|addition/)) color = '#ce9178';
+          else if (className.match(/comment|quote|deletion|meta/)) color = '#6a9955';
+          else if (className.match(/number|regexp|link/)) color = '#b5cea8';
+          else if (className.match(/params|attr/)) color = '#9cdcfe';
+          else if (className.match(/title/)) color = '#dcdcaa';
+          
+          spans.push({ text: spanMatch[2], color });
+          lastSpanIndex = spanRegex.lastIndex;
+        }
+        
+        if (lastSpanIndex < lineContent.length) {
+          spans.push({ text: lineContent.slice(lastSpanIndex) });
+        }
+        
+        parsedLines.push({ text: lineContent.replace(/<[^>]*>/g, ''), spans });
+      }
+      
+      items.push({ type: 'code', content: codeContent.replace(/<[^>]*>/g, ''), lang, lines: parsedLines });
+      lastIndex = codeBlockRegex.lastIndex;
+    }
+    
+    if (lastIndex < html.length) {
+      const textContent = html.slice(lastIndex);
+      const cleanedText = textContent
+        .replace(/<br\s*\/?>/gi, '\n')
+        .trim();
+      if (cleanedText) {
+        items.push({ type: 'text', content: cleanedText });
+      }
+    }
+    
+    return { items, imagesArray };
   };
 
   const setHistoryStorage = (data) => {
@@ -232,14 +302,37 @@ const Post = () => {
               </View>
             </View>
           </View>
-          {htmlChunks.length > 0 ? (
+          {renderItems.length > 0 ? (
             <View className='content'>
-              {htmlChunks.map((chunk, index) => (
-                <View
-                  key={index}
-                  dangerouslySetInnerHTML={{ __html: chunk }}
-                  onClick={(e) => handleClick(e)}
-                />
+              {renderItems.map((item, index) => (
+                item.type === 'code' ? (
+                  <View key={index} className='code-block'>
+                    <View className='code-header'>
+                      <Text className='code-lang'>{item.lang || 'code'}</Text>
+                    </View>
+                    <ScrollView scrollX className='code-scroll'>
+                      <View className='code-lines'>
+                        {item.lines?.map((line, lineIndex) => (
+                          <View key={lineIndex} className='code-line'>
+                            {line.spans.map((span, spanIndex) => (
+                              <Text
+                                key={spanIndex}
+                                style={span.color ? { color: span.color } : {}}
+                              >{span.text}</Text>
+                            ))}
+                          </View>
+                        ))}
+                      </View>
+                    </ScrollView>
+                  </View>
+                ) : (
+                  <View
+                    key={index}
+                    dangerouslySetInnerHTML={{ __html: item.content }}
+                    onClick={(e) => handleClick(e)}
+                    className='text-content'
+                  />
+                )
               ))}
             </View>
           ) : null}

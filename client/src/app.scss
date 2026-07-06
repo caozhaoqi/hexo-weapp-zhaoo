@@ -1,0 +1,96 @@
+@import '../node_modules/mp-html/plugins/highlight/prism.css';
+
+.hl-pre {
+  background: #2d2d2d !important;
+  padding: 24rpx !important;
+  border-radius: 8rpx !important;
+  margin-bottom: 16rpx !important;
+  overflow-x: auto !important;
+}
+
+.hl-code {
+  color: #ccc !important;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+  font-size: 24rpx !important;
+  line-height: 1.5 !important;
+}
+
+.hl-language {
+  color: #999 !important;
+  font-size: 20rpx !important;
+  position: absolute !important;
+  top: 8rpx !important;
+  right: 16rpx !important;
+}
+
+.line-numbers-rows {
+  color: #666 !important;
+  font-size: 24rpx !important;
+}
+
+.hl-comment,
+.hl-block-comment,
+.hl-prolog,
+.hl-doctype,
+.hl-cdata {
+  color: #999 !important;
+}
+
+.hl-punctuation {
+  color: #ccc !important;
+}
+
+.hl-tag,
+.hl-attr-name,
+.hl-namespace,
+.hl-deleted {
+  color: #e2777a !important;
+}
+
+.hl-function-name {
+  color: #6196cc !important;
+}
+
+.hl-boolean,
+.hl-number,
+.hl-function {
+  color: #f08d49 !important;
+}
+
+.hl-property,
+.hl-class-name,
+.hl-constant,
+.hl-symbol {
+  color: #f8c555 !important;
+}
+
+.hl-selector,
+.hl-important,
+.hl-atrule,
+.hl-keyword,
+.hl-builtin {
+  color: #cc99cd !important;
+}
+
+.hl-string,
+.hl-char,
+.hl-attr-value,
+.hl-regex,
+.hl-variable {
+  color: #7ec699 !important;
+}
+
+.hl-operator,
+.hl-entity,
+.hl-url {
+  color: #67cdcc !important;
+}
+
+.hl-important,
+.hl-bold {
+  font-weight: bold !important;
+}
+
+.hl-italic {
+  font-style: italic !important;
+}

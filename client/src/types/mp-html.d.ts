@@ -9,6 +9,7 @@ declare module 'react' {
         'copy-link'?: boolean;
         selectable?: boolean;
         'tag-style'?: { [key: string]: string };
+        plugins?: string[];
         onLinkTap?: (e: { detail: { src: string } }) => void;
       };
     }

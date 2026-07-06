@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
+import Taro, { useShareAppMessage, useShareTimeline, showToast } from '@tarojs/taro';
 import {
   View,
   Image,
@@ -14,7 +14,9 @@ import Donate from '@/components/donate';
 import ColorSwitch from '@/components/color-switch';
 import { get } from '@/apis/request';
 import { webUrl, motto } from '../../../config.json';
+import { getUserInfo, requestUserProfile } from '@/utils/index';
 import styles from './my.module.scss';
+import defaultAvatar from '@/assets/images/avatar.png';
 
 const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
@@ -22,10 +24,43 @@ const My = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [mottoText, setMottoText] = useState<string>(motto.default);
   const [motion, setMotion] = useState<[number, number]>([0, 0]);
+  const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
+  const [nickName, setNickName] = useState<string>('');
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
 
   useEffect(() => {
     fetchMotto();
+    checkUserInfo();
   }, []);
+
+  const checkUserInfo = async () => {
+    const userInfo = await getUserInfo();
+    if (userInfo) {
+      setNickName(userInfo.nickName);
+      setAvatarUrl(userInfo.avatarUrl);
+      setHasUserInfo(true);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const userInfo = await requestUserProfile();
+      setNickName(userInfo.nickName);
+      setAvatarUrl(userInfo.avatarUrl);
+      setHasUserInfo(true);
+      showToast({
+        icon: 'success',
+        title: '登录成功',
+        duration: 2000,
+      });
+    } catch (e) {
+      showToast({
+        icon: 'none',
+        title: '请授权登录',
+        duration: 2000,
+      });
+    }
+  };
 
   useShareTimeline(() => {
     return {
@@ -85,15 +120,30 @@ const My = () => {
             style={bgStyle}
           />
           <View className={styles.user}>
-            <View className={styles.avatar}>
-              <OpenData type='userAvatarUrl' lang='zh_CN' />
-            </View>
-            <View className={styles.userContent}>
-              <View className={styles.nickname}>
-                <OpenData type='userNickName' lang='zh_CN' defaultText='用户' />
-              </View>
-              <Text className={styles.motto}>{mottoText}</Text>
-            </View>
+            {hasUserInfo ? (
+              <>
+                <View className={styles.avatar}>
+                  <Image
+                    src={avatarUrl || defaultAvatar}
+                    className={styles.avatarImage}
+                    mode='aspectFill'
+                  />
+                </View>
+                <View className={styles.userContent}>
+                  <View className={styles.nickname}>
+                    <Text>{nickName}</Text>
+                  </View>
+                  <Text className={styles.motto}>{mottoText}</Text>
+                </View>
+              </>
+            ) : (
+              <Button
+                className={styles.loginButton}
+                onClick={() => handleLogin()}
+              >
+                点击登录
+              </Button>
+            )}
           </View>
         </View>
         <View className={styles.tabnav} style={bannerStyle}>

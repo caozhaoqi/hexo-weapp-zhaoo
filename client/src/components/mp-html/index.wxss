@@ -1,1 +1,1 @@
-._root{padding:1px 0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}._select{-webkit-user-select:text;user-select:text}
+._root{padding:1px 0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}._select{-webkit-user-select:text;user-select:text}.hl-pre{background:#2d2d2d;padding:24rpx;border-radius:8rpx;margin-bottom:16rpx;overflow-x:auto}.hl-code{color:#ccc;font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;font-size:24rpx;line-height:1.5}

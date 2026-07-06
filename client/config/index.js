@@ -36,7 +36,7 @@ const config = {
         to: 'app.miniapp.json',
       },
       {
-        from: path.resolve(__dirname, '../node_modules/mp-html/dist/mp-weixin'),
+        from: path.resolve(__dirname, '../src/components/mp-html'),
         to: path.resolve(__dirname, '../dist/components/mp-html'),
       },
     ],

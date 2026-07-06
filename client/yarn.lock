@@ -4210,11 +4210,6 @@ crypto-browserify@^3.11.0:
     randombytes "^2.1.0"
     randomfill "^1.0.4"
 
-crypto-js@^4.1.1:
-  version "4.2.0"
-  resolved "https://registry.npmmirror.com/crypto-js/-/crypto-js-4.2.0.tgz"
-  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
-
 css-declaration-sorter@^7.2.0:
   version "7.4.0"
   resolved "https://registry.npmmirror.com/css-declaration-sorter/-/css-declaration-sorter-7.4.0.tgz"

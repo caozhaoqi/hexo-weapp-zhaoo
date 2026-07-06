@@ -23,9 +23,10 @@ const Like = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
   const [nickName, setNickName] = useState<string>('');
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
 
   useEffect(() => {
-    // checkUserInfo();
+    checkUserInfo();
   }, []);
 
   useReachBottom(() => {
@@ -57,6 +58,7 @@ const Like = () => {
     const userInfo = await getUserInfo();
     if (userInfo) {
       setNickName(userInfo.nickName);
+      setAvatarUrl(userInfo.avatarUrl);
       setHasUserInfo(true);
       fetchData(userInfo.nickName);
     }
@@ -66,8 +68,14 @@ const Like = () => {
     try {
       const userInfo = await requestUserProfile();
       setNickName(userInfo.nickName);
+      setAvatarUrl(userInfo.avatarUrl);
       setHasUserInfo(true);
       fetchData(userInfo.nickName);
+      showToast({
+        icon: 'success',
+        title: '登录成功',
+        duration: 2000,
+      });
     } catch (e) {
       showToast({
         icon: 'none',

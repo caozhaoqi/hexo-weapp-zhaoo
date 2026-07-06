@@ -1,1 +1,1 @@
-cd /Users/caozhaoqi/PycharmProjects/hexo-weapp-zhaoo/client && NODE_OPTIONS=--openssl-legacy-provider npm run build:weapp
+cd /Users/caozhaoqi/PycharmProjects/hexo-weapp-zhaoo/client && NODE_OPTIONS=--openssl-legacy-provider npm run build:weapp && cp -r node_modules/mp-html/plugins/highlight dist/components/mp-html/

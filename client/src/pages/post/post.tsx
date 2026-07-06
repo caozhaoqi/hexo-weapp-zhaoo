@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useContext } from 'react';
 import Taro, {
   getCurrentInstance,
   useShareTimeline,
@@ -16,6 +16,7 @@ import Donate from '@/components/donate';
 import ImmersiveTitlebar from '@/components/immersive-titlebar';
 import Fab from '@/components/fab';
 import { IPostItem } from '@/types/post';
+import { useTheme } from '@/contexts/theme';
 import config from '../../../config.json';
 import './post.scss';
 
@@ -64,18 +65,39 @@ const processHtml = (data: string): { processedHtml: string; imagesArray: string
   html = html.replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '');
   html = html.replace(/<canvas[^>]*>[\s\S]*?<\/canvas>/gi, '');
 
-  html = html.replace(
-    /<figure\s+class="highlight\s+([^"]*)">[\s\S]*?<td\s+class="code">[\s\S]*?<pre>([\s\S]*?)<\/pre>[\s\S]*?<\/figure>/gi,
-    (match, lang, codeContent) => {
-      const cleanCode = codeContent
-        .replace(/<span\s+class="line">/gi, '')
+  const figureRegex = /<figure\s+class="highlight[^"]*">[\s\S]*?<\/figure>/gi;
+  html = html.replace(figureRegex, (match) => {
+    const langMatch = match.match(/class="highlight\s+(\w+)"/);
+    const lang = langMatch ? langMatch[1] : 'text';
+    
+    const codeMatch = match.match(/<td\s+class="code">[\s\S]*?<pre>([\s\S]*?)<\/pre>[\s\S]*?<\/td>/i);
+    if (codeMatch && codeMatch[1]) {
+      let codeContent = codeMatch[1];
+      codeContent = codeContent
+        .replace(/<span[^>]*>/gi, '')
         .replace(/<\/span>/gi, '')
+        .replace(/<br\s*\/?>/gi, '\n')
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
-      return `<pre><code class="language-${lang}">${cleanCode}</code></pre>`;
+      return `<pre><code class="language-${lang}">${codeContent}</code></pre>`;
     }
-  );
+    
+    const preMatch = match.match(/<pre>([\s\S]*?)<\/pre>/i);
+    if (preMatch && preMatch[1]) {
+      let codeContent = preMatch[1];
+      codeContent = codeContent
+        .replace(/<span[^>]*>/gi, '')
+        .replace(/<\/span>/gi, '')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+      return `<pre><code class="language-${lang}">${codeContent}</code></pre>`;
+    }
+    
+    return match;
+  });
 
   return { processedHtml: html, imagesArray };
 };
@@ -97,6 +119,7 @@ const Post = () => {
   const [slug] = useState<string>(
     getCurrentInstance().router?.params.slug || ''
   );
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetchPost();
@@ -130,7 +153,7 @@ const Post = () => {
       const { more, title } = data;
       Taro.setNavigationBarTitle({ title });
       const { processedHtml, imagesArray } = processHtml(more);
-      data.more = more;
+      data.more = processedHtml;
       setImages(imagesArray);
       setContent(processedHtml);
       setPost(data);
@@ -220,9 +243,10 @@ const Post = () => {
                 ol: 'margin-bottom: 16rpx; padding-left: 32rpx;',
                 li: 'line-height: 1.8; margin-bottom: 8rpx;',
                 blockquote: 'border-left: 6rpx solid #ff3b00; padding-left: 20rpx; margin-bottom: 16rpx; color: #666;',
-                code: 'background: #f4f4f4; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace;',
-                pre: 'background: #1e1e1e; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto;',
+                code: theme === 'dark' ? 'background: #333; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace; color: #ccc;' : 'background: #f4f4f4; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace;',
+                pre: theme === 'dark' ? 'background: #2d2d2d; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; color: #ccc; font-family: monospace;' : 'background: #f8f8f8; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; font-family: monospace;',
               }}
+              plugins={['highlight']}
               onLinkTap={handleLinkTap}
             />
           </View>

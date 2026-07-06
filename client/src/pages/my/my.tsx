@@ -116,7 +116,8 @@ const My = () => {
           <View
             className={styles.tabnavItem}
             onClick={() => {
-              setModalVisible(true);
+              // setModalVisible(true);
+              setMottoText('');
             }}
           >
             <Icon type='image' name='reward' size={30} />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Taro, {
   getCurrentInstance,
   useShareTimeline,
@@ -20,6 +20,73 @@ import config from '../../../config.json';
 import './post.scss';
 
 const DEFAULT_COVER = '/assets/images/logo.png';
+
+const getImageUrl = (src: string): string => {
+  if (!src) return DEFAULT_COVER;
+  const decodedSrc = decodeURIComponent(src);
+  if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
+    if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
+      const cleanUrl = decodedSrc.split('?')[0];
+      return cleanUrl;
+    }
+    return decodedSrc;
+  }
+  const baseHost = config.baseUrl.replace('/api', '');
+  const normalizedSrc = decodedSrc.startsWith('/') ? decodedSrc : `/${decodedSrc}`;
+  return baseHost + normalizedSrc;
+};
+
+const processHtml = (data: string): { processedHtml: string; imagesArray: string[] } => {
+  if (!data) return { processedHtml: '', imagesArray: [] };
+
+  const imagesArray: string[] = [];
+  let html = data;
+
+  html = html.replace(
+    /<img([^>]*)src="([^"]*)"([^>]*)>/gim,
+    (match, attrBegin, src: string, attrEnd) => {
+      const fullUrl = getImageUrl(src);
+      imagesArray.push(fullUrl);
+      return `<img ${attrBegin} src='${fullUrl}' mode='widthFix' lazy-load ${attrEnd}>`;
+    }
+  );
+
+  html = html.replace(
+    /<a([^>]*)href="([^"]*)"([^>]*)>/gim,
+    (match, attrBegin, href: string, attrEnd) => {
+      return `<a ${attrBegin} href='${href}' ${attrEnd}>`;
+    }
+  );
+
+  html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+  html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+  html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+  html = html.replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '');
+  html = html.replace(/<canvas[^>]*>[\s\S]*?<\/canvas>/gi, '');
+
+  html = html.replace(
+    /<figure\s+class="highlight\s+([^"]*)">[\s\S]*?<td\s+class="code">[\s\S]*?<pre>([\s\S]*?)<\/pre>[\s\S]*?<\/figure>/gi,
+    (match, lang, codeContent) => {
+      const cleanCode = codeContent
+        .replace(/<span\s+class="line">/gi, '')
+        .replace(/<\/span>/gi, '')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+      return `<pre><code class="language-${lang}">${cleanCode}</code></pre>`;
+    }
+  );
+
+  return { processedHtml: html, imagesArray };
+};
+
+const setHistoryStorage = (data: IPostItem) => {
+  const key = 'history';
+  const arr = getStorageSync(key) || [];
+  const filteredArr = arr.filter((item: IPostItem) => item.slug !== data.slug);
+  filteredArr.push(data);
+  setStorageSync(key, filteredArr);
+};
 
 const Post = () => {
   const [post, setPost] = useState<IPostItem>({} as IPostItem);
@@ -56,7 +123,8 @@ const Post = () => {
     };
   });
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
+    if (!slug) return;
     const data = await getPostBySlug(slug);
     if (data) {
       const { more, title } = data;
@@ -69,77 +137,9 @@ const Post = () => {
       setStatus('ready');
       setHistoryStorage(data);
     }
-  };
+  }, [slug]);
 
-  const getImageUrl = (src: string): string => {
-    if (!src) return DEFAULT_COVER;
-    const decodedSrc = decodeURIComponent(src);
-    if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
-      if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
-        const cleanUrl = decodedSrc.split('?')[0];
-        return cleanUrl;
-      }
-      return decodedSrc;
-    }
-    const baseHost = config.baseUrl.replace('/api', '');
-    return baseHost + decodedSrc;
-  };
-
-  const processHtml = (data: string): { processedHtml: string; imagesArray: string[] } => {
-    if (!data) return { processedHtml: '', imagesArray: [] };
-
-    const imagesArray: string[] = [];
-    let html = data;
-
-    html = html.replace(
-      /<img([^>]*)src="([^"]*)"([^>]*)>/gim,
-      (match, attrBegin, src: string, attrEnd) => {
-        const fullUrl = getImageUrl(src);
-        imagesArray.push(fullUrl);
-        return `<img ${attrBegin} src='${fullUrl}' mode='widthFix' lazy-load ${attrEnd}>`;
-      }
-    );
-
-    html = html.replace(
-      /<a([^>]*)href="([^"]*)"([^>]*)>/gim,
-      (match, attrBegin, href: string, attrEnd) => {
-        return `<a ${attrBegin} href='${href}' ${attrEnd}>`;
-      }
-    );
-
-    html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
-    html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
-    html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-    html = html.replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '');
-    html = html.replace(/<canvas[^>]*>[\s\S]*?<\/canvas>/gi, '');
-
-    html = html.replace(
-      /<figure\s+class="highlight\s+([^"]*)">[\s\S]*?<td\s+class="code">[\s\S]*?<pre>([\s\S]*?)<\/pre>[\s\S]*?<\/figure>/gi,
-      (match, lang, codeContent) => {
-        const cleanCode = codeContent
-          .replace(/<span\s+class="line">/gi, '')
-          .replace(/<\/span>/gi, '')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&');
-        return `<pre><code class="language-${lang}">${cleanCode}</code></pre>`;
-      }
-    );
-
-    return { processedHtml: html, imagesArray };
-  };
-
-  const setHistoryStorage = (data) => {
-    const key = 'history';
-    const arr = getStorageSync(key) || [];
-    arr.forEach((item, index) => {
-      if (data.slug === item.slug) {
-        arr.splice(index, 1);
-      }
-    });
-    arr.push(data);
-    setStorageSync(key, arr);
-  };
+  const coverUrl = useMemo(() => getImageUrl(post.cover), [post.cover]);
 
   const handleLinkTap = (e) => {
     const href = e.detail.src;
@@ -162,7 +162,7 @@ const Post = () => {
           <ImmersiveTitlebar title={post.title || ''} />
           <View className='head'>
             <Image
-              src={getImageUrl(post.cover)}
+              src={coverUrl}
               lazyLoad
               className='cover'
               mode='aspectFill'
@@ -226,7 +226,7 @@ const Post = () => {
               onLinkTap={handleLinkTap}
             />
           </View>
-          {post.realPath ? <Comment url={post.realPath} /> : null}
+          <Comment url={post.realPath || `/${slug}`} />
           <Fab post={post} />
         </View>
       ) : null}

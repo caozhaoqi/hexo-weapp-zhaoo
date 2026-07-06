@@ -33,6 +33,11 @@ export const getUserInfo = async (): Promise<IUserInfo | null> => {
 };
 
 export const requestUserProfile = async (): Promise<IUserInfo> => {
+  const storage = getStorageSync('userinfo');
+  if (storage && storage.nickName) {
+    return storage;
+  }
+
   try {
     const res = await Taro.getUserProfile({
       desc: '用户信息将用于存储社交状态',
@@ -78,6 +83,10 @@ export const requestUserProfile = async (): Promise<IUserInfo> => {
       return defaultUser;
     }
   }
+};
+
+export const setUserProfile = (userInfo: IUserInfo): void => {
+  setStorageSync('userinfo', userInfo);
 };
 
 export const filterHtml = (str) => {

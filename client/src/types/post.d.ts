@@ -1,3 +1,8 @@
+export interface ITag {
+  name: string;
+  path?: string;
+}
+
 export interface IPostItem {
   title: string;
   excerpt: string;
@@ -8,7 +13,7 @@ export interface IPostItem {
   comments: boolean;
   content: string;
   raw?: string;
-  tags?: string;
+  tags?: string | string[] | ITag[];
   updated?: string;
   categories?: { name: string; path: string }[];
   top?: number;

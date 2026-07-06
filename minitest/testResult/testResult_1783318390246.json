@@ -1,0 +1,957 @@
+{
+  "startTime": 1783318390246,
+  "endTime": 1783318488985,
+  "numTotalTests": 1,
+  "numTodoTests": 0,
+  "testResults": [
+    {
+      "replayResults": [
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 0,
+          "status": "processing",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 1,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 2,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 3,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 4,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 5,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 6,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 7,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 8,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 9,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 10,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 11,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 12,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 13,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 14,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 15,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 16,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 17,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 18,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 19,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 20,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 21,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 22,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 23,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 24,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 25,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 26,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 27,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 28,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 29,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 30,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 31,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 32,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 33,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 34,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "input",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 35,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 36,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 37,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 38,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 39,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 40,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 41,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 42,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 43,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 44,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 45,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 46,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 47,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 48,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 49,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 50,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 51,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 52,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 53,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 54,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 55,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 56,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "input",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 57,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 58,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 59,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 60,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 61,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 62,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "scroll",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 63,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 64,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 65,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 66,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 67,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 68,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 69,
+          "replayResult": "failed",
+          "message": "navigateLeft failed",
+          "status": "processing",
+          "commandName": "navigateLeft",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 70,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 71,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 72,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 73,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 74,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 75,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 76,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 77,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 78,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 79,
+          "replayResult": "failed",
+          "message": "navigateLeft failed",
+          "status": "processing",
+          "commandName": "navigateLeft",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 80,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 81,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 82,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 83,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 84,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 85,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 86,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 87,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 88,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 89,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 90,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "switchTab",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 91,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 92,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 93,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 94,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 95,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 96,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 97,
+          "replayResult": "failed",
+          "message": "navigateLeft failed",
+          "status": "processing",
+          "commandName": "navigateLeft",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 98,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 99,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 100,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 101,
+          "replayResult": "failed",
+          "message": "navigateLeft failed",
+          "status": "processing",
+          "commandName": "navigateLeft",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 102,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 103,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 104,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 105,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 106,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 107,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 108,
+          "replayResult": "failed",
+          "message": "navigateLeft failed",
+          "status": "processing",
+          "commandName": "navigateLeft",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 109,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 110,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 111,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 112,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchstart",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 113,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "touchend",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 114,
+          "status": "processing",
+          "replayResult": "passed",
+          "commandName": "tap",
+          "command": null
+        },
+        {
+          "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133",
+          "commandIndex": 115,
+          "status": "processing",
+          "command": null
+        }
+      ],
+      "replayResult": "failed",
+      "startTime": 1783318390246,
+      "endTime": 1783318488980,
+      "casePath": "",
+      "caseName": "minitest-1",
+      "caseId": "85ed479d-d7ae-4f8d-ad03-3287e3df7133"
+    }
+  ],
+  "success": false,
+  "numPassedTests": 0,
+  "numFailedTests": 1,
+  "env": {
+    "wxapplibVersion": "3.16.2",
+    "simulatorType": "wechat",
+    "devtoolsVersion": "2.01.2510290",
+    "openid": "o6zAJs8-l3SEHOlGQEIQ-zOFM9-U",
+    "device": "iPhone 15 Pro Max"
+  }
+}

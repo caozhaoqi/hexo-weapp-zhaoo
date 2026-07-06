@@ -1,7 +1,7 @@
 import { useState, FC } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
-import md5 from 'crypto-js/md5';
+import md5 from '@/utils/md5';
 import { formateDate } from '@/utils/index';
 import defaultAvatar from '@/assets/images/avatar.png';
 import styles from './index.module.scss';

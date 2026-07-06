@@ -1,4 +1,4 @@
-import { get } from "@/apis/request";
+import { get, post } from "@/apis/request";
 
 export const getConfig = () => {
   return get(`/site.json`, {}, {}, true, true, 'config_cache');
@@ -34,4 +34,19 @@ export const getGalleryByName = (name) => {
 
 export const getAllGalleries = () => {
   return get(`/galleries/all.json`, {}, {}, true, true, 'all_galleries_cache');
+};
+
+export const getComments = (url?: string) => {
+  const params = url ? { url } : {};
+  return get(`/api/comments`, params, {}, true, false);
+};
+
+export const postComment = (data: {
+  url: string;
+  comment: string;
+  nick: string;
+  mail?: string;
+  weappAvatar: string;
+}) => {
+  return post(`/api/comments`, data, {}, true);
 };

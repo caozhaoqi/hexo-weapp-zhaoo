@@ -25,7 +25,7 @@ const Like = () => {
   const [nickName, setNickName] = useState<string>('');
 
   useEffect(() => {
-    checkUserInfo();
+    // checkUserInfo();
   }, []);
 
   useReachBottom(() => {

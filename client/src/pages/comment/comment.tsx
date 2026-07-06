@@ -8,7 +8,7 @@ import styles from './comment.module.scss';
 
 const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
-const Comment = () => {
+const CommentPage = () => {
   const [list, setList] = useState<ICommentData[]>([]);
   const [count, setCount] = useState<number>(0);
 
@@ -37,7 +37,7 @@ const Comment = () => {
     };
   });
 
-  const fetchData = async () => {
+  const fetchData = () => {
     const comments = getComments();
     setList(comments);
     setCount(comments.length);
@@ -52,4 +52,4 @@ const Comment = () => {
   );
 };
 
-export default Comment;
+export default CommentPage;

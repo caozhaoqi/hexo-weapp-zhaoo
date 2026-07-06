@@ -13,7 +13,7 @@ import CommentList from '@/components/comment-list';
 import LiteLoading from '@/components/lite-loading';
 import Pad from '@/components/pad';
 import Icon from '@/components/icon';
-import { getUserInfo, requestUserProfile, getComments, addComment, ICommentData } from '@/utils/index';
+import { getUserInfo, requestUserProfile, addComment, getComments, ICommentData } from '@/utils/index';
 import styles from './index.module.scss';
 
 interface ICommentProps {
@@ -28,11 +28,12 @@ const Comment: FC<ICommentProps> = ({ url }) => {
 
   useEffect(() => {
     fetchData();
-    Taro.eventCenter.on('changeCommentVisible', () =>
-      setCommentVisible(!commentVisible)
-    );
+    const handler = () => {
+      setCommentVisible((prev) => !prev);
+    };
+    Taro.eventCenter.on('changeCommentVisible', handler);
     return () => {
-      Taro.eventCenter.off('changeCommentVisible');
+      Taro.eventCenter.off('changeCommentVisible', handler);
     };
   }, []);
 
@@ -42,12 +43,21 @@ const Comment: FC<ICommentProps> = ({ url }) => {
   };
 
   const sendComment = async () => {
-    if (!commentValue) return;
+    if (!commentValue) {
+      showToast({
+        title: '请输入评论内容',
+        icon: 'none',
+        duration: 2000,
+      });
+      return;
+    }
+
     let userInfo = await getUserInfo();
     if (!userInfo) {
       try {
         userInfo = await requestUserProfile();
       } catch (e) {
+        console.error('[评论] 获取用户信息失败:', e);
         showToast({
           title: '请授权登录',
           icon: 'none',
@@ -56,27 +66,32 @@ const Comment: FC<ICommentProps> = ({ url }) => {
         return;
       }
     }
+
     const { avatarUrl, nickName } = userInfo;
-    try {
-      const commentData: ICommentData = {
-        url,
-        comment: `<p>${commentValue}</p>`,
-        nick: nickName,
-        weappAvatar: avatarUrl,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      addComment(commentData);
+    const commentData: ICommentData = {
+      url,
+      comment: `<p>${commentValue}</p>`,
+      nick: nickName || '访客',
+      weappAvatar: avatarUrl || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const success = addComment(commentData);
+    if (success) {
       setCommentValue('');
       showToast({
         title: '评论成功',
         icon: 'success',
         duration: 2000,
       });
-      setTimeout(() => fetchData());
-    } catch (e) {
+      setTimeout(() => {
+        fetchData();
+        setCommentVisible(false);
+      }, 1000);
+    } else {
       showToast({
-        title: '评论失败',
+        title: '评论失败，请重试',
         icon: 'none',
         duration: 2000,
       });

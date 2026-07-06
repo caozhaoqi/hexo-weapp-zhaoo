@@ -76,10 +76,10 @@ const usePagination: IUsePagination = () => {
   }, [currentPage, isInitialized]);
 
   useEffect(() => {
-    if (isInitialized && !allDataLoaded && (sortBy !== 'latest' || selectedTag)) {
+    if (isInitialized && !allDataLoaded && totalPages > 0 && (sortBy !== 'latest' || selectedTag)) {
       loadAllData();
     }
-  }, [sortBy, selectedTag]);
+  }, [sortBy, selectedTag, totalPages]);
 
   const initData = () => {
     const cached = getStorageSync(CACHE_KEY);

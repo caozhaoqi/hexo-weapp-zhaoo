@@ -1,0 +1,16 @@
+import type * as React from 'react';
+
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'mp-html': {
+        content?: string;
+        'preview-img'?: boolean;
+        'copy-link'?: boolean;
+        selectable?: boolean;
+        'tag-style'?: { [key: string]: string };
+        onLinkTap?: (e: { detail: { src: string } }) => void;
+      };
+    }
+  }
+}

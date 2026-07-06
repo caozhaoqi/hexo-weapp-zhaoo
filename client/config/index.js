@@ -34,6 +34,10 @@ const config = {
         from: path.resolve(__dirname, '../app.miniapp.json'),
         to: 'app.miniapp.json',
       },
+      {
+        from: path.resolve(__dirname, '../node_modules/mp-html/dist/mp-weixin'),
+        to: path.resolve(__dirname, '../dist/components/mp-html'),
+      },
     ],
     options: {},
   },

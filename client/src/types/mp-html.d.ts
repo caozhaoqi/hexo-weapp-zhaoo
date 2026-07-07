@@ -6,7 +6,6 @@ declare module 'react' {
       'mp-html': {
         content?: string;
         'preview-img'?: boolean;
-        'copy-link'?: boolean;
         selectable?: boolean;
         'tag-style'?: { [key: string]: string };
         plugins?: string[];

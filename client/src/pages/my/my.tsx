@@ -195,16 +195,16 @@ const My = () => {
             arrow
             onClick={() => Taro.navigateTo({ url: `/pages/history/history` })}
           />
-          <List
+          {/* <List
             title='网页博客'
             icon='cloud'
             arrow
             onClick={() =>
-              Taro.setClipboardData({
-                data: webUrl,
+              Taro.navigateTo({
+                url: `/pages/webview/webview?url=${encodeURIComponent(webUrl)}`,
               })
             }
-          />
+          /> */}
           <List
             title='实验功能'
             icon='experiment'

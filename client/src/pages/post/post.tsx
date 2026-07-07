@@ -166,12 +166,8 @@ const Post = () => {
   const handleLinkTap = (e) => {
     const href = e.detail.src;
     if (href) {
-      Taro.setClipboardData({
-        data: href,
-      });
-      Taro.showToast({
-        title: '链接已复制',
-        icon: 'none',
+      Taro.navigateTo({
+        url: `/pages/webview/webview?url=${encodeURIComponent(href)}`,
       });
     }
   };
@@ -231,7 +227,6 @@ const Post = () => {
             <mp-html
               content={content}
               preview-img={true}
-              copy-link={true}
               selectable={true}
               tag-style={{
                 p: 'margin-bottom: 16rpx; line-height: 1.8;',

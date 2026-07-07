@@ -38,14 +38,10 @@ const About = () => {
           icon='github'
           arrow
           extraText='Arona'
-          onClick={
-            () =>
-              Taro.setClipboardData({
-                data: 'https://caozhaoqi.github.io',
-              })
-            // Taro.navigateTo({
-            //   url: `/pages/webview/webview?url=https://caozhaoqi.github.io`,
-            // })
+          onClick={() =>
+            Taro.navigateTo({
+              url: `/pages/webview/webview?url=https://caozhaoqi.github.io`,
+            })
           }
         />
         {/* <List

@@ -14,3 +14,4 @@ logs.log
 /client/dist/
 .idea/
 client/.swc/
+galleries.json

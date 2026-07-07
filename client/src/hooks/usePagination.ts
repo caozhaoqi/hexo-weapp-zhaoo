@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   useReachBottom,
   usePullDownRefresh,
@@ -60,6 +60,7 @@ const usePagination: IUsePagination = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [allDataLoaded, setAllDataLoaded] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   const [sortBy, setSortBy] = useState<'latest' | 'earliest'>('latest');
   const [selectedTag, setSelectedTag] = useState<string>('');
@@ -74,6 +75,13 @@ const usePagination: IUsePagination = () => {
     setIsLoading(true);
     fetchData();
   }, [currentPage, isInitialized]);
+
+  useEffect(() => {
+    if (refreshTrigger > 0 && !isLoading) {
+      setIsLoading(true);
+      fetchData();
+    }
+  }, [refreshTrigger]);
 
   useEffect(() => {
     if (isInitialized && !allDataLoaded && totalPages > 0 && (sortBy !== 'latest' || selectedTag)) {
@@ -241,6 +249,7 @@ const usePagination: IUsePagination = () => {
     } catch (e) {
       console.warn('[分页] 清除缓存失败:', e);
     }
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const allTags = useMemo(() => {

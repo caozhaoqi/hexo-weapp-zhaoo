@@ -9,7 +9,6 @@ export default {
     'pages/webview/webview',
     'pages/about/about',
     'pages/laboratory/laboratory',
-    'pages/comment/comment',
     'pages/like/like',
   ],
   window: {

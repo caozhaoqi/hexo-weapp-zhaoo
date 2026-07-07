@@ -190,12 +190,6 @@ const My = () => {
         <View className={styles.listWrapper}>
           <List title='夜间模式' icon='moon' rightChildren={<ColorSwitch />} />
           <List
-            title='全部评论'
-            icon='message'
-            arrow
-            onClick={() => Taro.navigateTo({ url: `/pages/comment/comment` })}
-          />
-          <List
             title='浏览历史'
             icon='time'
             arrow

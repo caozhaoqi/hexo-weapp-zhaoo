@@ -1,5 +1,5 @@
 export default {
-  navigationBarTitleText: "相册",
+  navigationBarTitleText: "时间轴",
   enableShareTimeline: true,
   enableShareAppMessage: true
 };

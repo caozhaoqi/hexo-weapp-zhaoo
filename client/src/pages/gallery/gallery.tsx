@@ -12,9 +12,9 @@ import './gallery.scss';
 const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 
 const DEFAULT_GALLERY: IGalleryItem = {
-  name: '摄影作品',
-  cover: 'https://caozhaoqi.github.io/images/gallery/1.jpg',
-  description: '精选摄影作品',
+  name: '美图',
+  cover: 'https://pic3.zhimg.com/80/v2-e5c15010b8ba4608a1974403a02a2da0_1440w.webp',
+  description: '美图',
   count: 12,
   photos: [
     'https://p3.music.126.net/bQ0yDljE0g32N7AvAs3P_A==/109951170542138279.jpg?param=300y300',

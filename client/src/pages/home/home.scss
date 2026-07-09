@@ -84,3 +84,59 @@
     width: 48rpx;
   }
 }
+
+.gallery-section {
+  background: #ffffff;
+  margin-top: 20rpx;
+  padding: 24rpx 0;
+
+  .section-header {
+    padding: 0 30rpx 20rpx;
+
+    .section-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+  }
+
+  .gallery-scroll {
+    white-space: nowrap;
+  }
+
+  .gallery-list {
+    display: inline-flex;
+    padding: 0 30rpx;
+    gap: 20rpx;
+  }
+
+  .gallery-item {
+    width: 200rpx;
+    flex-shrink: 0;
+
+    .gallery-cover {
+      width: 200rpx;
+      height: 160rpx;
+      border-radius: 16rpx;
+    }
+
+    .gallery-info {
+      padding-top: 12rpx;
+
+      .gallery-name {
+        display: block;
+        font-size: 26rpx;
+        color: #333333;
+        text-align: center;
+        margin-bottom: 4rpx;
+      }
+
+      .gallery-count {
+        display: block;
+        font-size: 22rpx;
+        color: #999999;
+        text-align: center;
+      }
+    }
+  }
+}

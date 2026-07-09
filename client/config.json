@@ -2,8 +2,8 @@
   "baseUrl": "https://caozhaoqi.github.io/api",
   "webUrl": "https://caozhaoqi.github.io",
   "donate": {
-    "wechat": "https://caozhaoqi.github.io/logo.png",
-    "alipay": "https://caozhaoqi.github.io/logo.png"
+    "wechat": "https://caozhaoqi.github.io/medias/logo.png",
+    "alipay": "https://caozhaoqi.github.io/medias/logo.png"
   },
   "leancloud": {
     "appId": "5nmYX1URDFyD1Vu6WxizEsF-gzGzoHsz",

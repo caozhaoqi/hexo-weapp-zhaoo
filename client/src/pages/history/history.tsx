@@ -8,7 +8,7 @@ import { getStorageSync } from '@/utils/storage';
 import { formateDate } from '@/utils/index';
 import styles from './history.module.scss';
 
-const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
+const DEFAULT_SHARE_IMAGE = 'https://pic3.zhimg.com/80/v2-5f7cb7e900b9dcf5354c3d4d2c5cc3c2_1440w.webp';
 
 interface IHistoryItem {
   cover: string;

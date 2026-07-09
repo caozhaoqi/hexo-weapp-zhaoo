@@ -75,7 +75,7 @@ const My = () => {
       path: '/pages/my/my',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
-      userName: '',
+      userName: 'Arona',
       imagePath: '',
       withShareTicket: false,
       miniprogramType: 0,
@@ -120,7 +120,7 @@ const My = () => {
             style={bgStyle}
           />
           <View className={styles.user}>
-            {hasUserInfo ? (
+            {
               <>
                 <View className={styles.avatar}>
                   <Image
@@ -136,14 +136,7 @@ const My = () => {
                   <Text className={styles.motto}>{mottoText}</Text>
                 </View>
               </>
-            ) : (
-              <Button
-                className={styles.loginButton}
-                onClick={() => handleLogin()}
-              >
-                点击登录
-              </Button>
-            )}
+            }
           </View>
         </View>
         <View className={styles.tabnav} style={bannerStyle}>
@@ -162,8 +155,8 @@ const My = () => {
             <Icon type='image' name='like' size={30} />
             <Text className={styles.text}>喜欢</Text>
           </View>
-          <View className={styles.divide} />
-          <View
+          {/* <View className={styles.divide} /> */}
+          {/* <View
             className={styles.tabnavItem}
             onClick={() => {
               // setModalVisible(true);
@@ -172,9 +165,9 @@ const My = () => {
           >
             <Icon type='image' name='reward' size={30} />
             <Text className={styles.text}>打赏</Text>
-          </View>
-          <View className={styles.divide} />
-          <Button
+          </View> */}
+          {/* <View className={styles.divide} /> */}
+          {/* <Button
             className={styles.tabnavItem}
             openType='share'
             style={{
@@ -185,7 +178,7 @@ const My = () => {
           >
             <Icon type='image' name='share' size={30} />
             <Text className={styles.text}>分享</Text>
-          </Button>
+          </Button> */}
         </View>
         <View className={styles.listWrapper}>
           <List title='夜间模式' icon='moon' rightChildren={<ColorSwitch />} />
@@ -212,6 +205,12 @@ const My = () => {
             onClick={() =>
               Taro.navigateTo({ url: `/pages/laboratory/laboratory` })
             }
+          />
+          <List
+            title='相册'
+            icon='earth'
+            arrow
+            onClick={() => Taro.navigateTo({ url: `/pages/gallery/gallery?name=摄影作品` })}
           />
           <List
             title='关于应用'

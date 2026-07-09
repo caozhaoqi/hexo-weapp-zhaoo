@@ -33,7 +33,7 @@ export default {
         pagePath: 'pages/galleries/galleries',
         iconPath: './assets/tabbar/image.png',
         selectedIconPath: './assets/tabbar/image-active.png',
-        text: '相册',
+        text: '时间轴',
       },
       {
         pagePath: 'pages/my/my',

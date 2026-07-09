@@ -8,7 +8,7 @@ import { getUserInfo, requestUserProfile, getLikes, ILikeData } from '@/utils/in
 import { formateDate } from '@/utils/index';
 import styles from './like.module.scss';
 
-const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
+const DEFAULT_SHARE_IMAGE = 'https://pic3.zhimg.com/80/v2-5f7cb7e900b9dcf5354c3d4d2c5cc3c2_1440w.webp';
 
 interface ILikeItem {
   cover: string;
@@ -21,9 +21,7 @@ interface ILikeItem {
 const Like = () => {
   const [list, setList] = useState<ILikeItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
-  const [nickName, setNickName] = useState<string>('');
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [hasUserInfo, setHasUserInfo] = useState<boolean>(true);
 
   useEffect(() => {
     checkUserInfo();
@@ -57,8 +55,8 @@ const Like = () => {
   const checkUserInfo = async () => {
     const userInfo = await getUserInfo();
     if (userInfo) {
-      setNickName(userInfo.nickName);
-      setAvatarUrl(userInfo.avatarUrl);
+      // setNickName(userInfo.nickName);
+      // setAvatarUrl(userInfo.avatarUrl);
       setHasUserInfo(true);
       fetchData(userInfo.nickName);
     }
@@ -67,8 +65,8 @@ const Like = () => {
   const handleLogin = async () => {
     try {
       const userInfo = await requestUserProfile();
-      setNickName(userInfo.nickName);
-      setAvatarUrl(userInfo.avatarUrl);
+      // setNickName(userInfo.nickName);
+      // setAvatarUrl(userInfo.avatarUrl);
       setHasUserInfo(true);
       fetchData(userInfo.nickName);
       showToast({
@@ -116,9 +114,9 @@ const Like = () => {
     <View className={styles.like}>
       {!hasUserInfo ? (
         <View className={styles.loginWrapper}>
-          <Button className={styles.loginButton} onClick={() => handleLogin()}>
+          {/* <Button className={styles.loginButton} onClick={() => handleLogin()}>
             登录查看我的收藏
-          </Button>
+          </Button> */}
         </View>
       ) : list.length > 0 ? (
         list.map((item) => (

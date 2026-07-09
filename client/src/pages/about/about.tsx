@@ -31,7 +31,7 @@ const About = () => {
   return (
     <View className={styles.about}>
       <Image className={styles.logo} src={logo} mode='aspectFill' />
-      <Text className={styles.title}>hexo-weapp-zhaoo</Text>
+      <Text className={styles.title}>Arona static blog</Text>
       <View className={styles.listWrapper}>
         <List
           title='GitHub'

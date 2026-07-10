@@ -8,22 +8,30 @@ interface LazyImageProps {
   mode?: 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix' | 'top' | 'bottom' | 'center' | 'left' | 'right' | 'scaleToFill';
   className?: string;
   placeholder?: string;
+  fallback?: string;
   onLoad?: () => void;
   immediate?: boolean;
+  retryCount?: number;
 }
 
 let imageIdCounter = 0;
+
+const DEFAULT_FALLBACK = '/assets/images/logo.png';
 
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   mode = 'aspectFill',
   className = '',
   placeholder = '',
+  fallback = DEFAULT_FALLBACK,
   onLoad,
   immediate = false,
+  retryCount = 2,
 }) => {
   const [visible, setVisible] = useState(immediate);
   const [loaded, setLoaded] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
+  const [retryAttempts, setRetryAttempts] = useState(0);
   const imageId = useMemo(() => `lazy-image-${++imageIdCounter}`, []);
 
   useEffect(() => {
@@ -63,6 +71,17 @@ const LazyImage: React.FC<LazyImageProps> = ({
     onLoad?.();
   };
 
+  const handleError = () => {
+    if (retryAttempts < retryCount) {
+      setRetryAttempts(retryAttempts + 1);
+      setTimeout(() => {
+        setCurrentSrc(src);
+      }, 1000 * Math.pow(2, retryAttempts));
+    } else {
+      setCurrentSrc(fallback);
+    }
+  };
+
   return (
     <View className={`${styles.lazyImage} ${className}`} id={imageId}>
       {!loaded && (
@@ -76,10 +95,11 @@ const LazyImage: React.FC<LazyImageProps> = ({
       )}
       <Image
         className={`${styles.image} ${loaded ? styles.visible : styles.hidden}`}
-        src={visible ? src : ''}
+        src={visible ? currentSrc : ''}
         mode={mode}
         lazyLoad
         onLoad={handleLoad}
+        onError={handleError}
       />
     </View>
   );

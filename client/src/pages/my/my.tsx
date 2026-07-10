@@ -15,6 +15,7 @@ import ColorSwitch from '@/components/color-switch';
 import { get } from '@/apis/request';
 import { webUrl, motto } from '../../../config.json';
 import { getUserInfo, requestUserProfile } from '@/utils/index';
+import { clearStorageSync } from '@/utils/storage';
 import styles from './my.module.scss';
 import defaultAvatar from '@/assets/images/avatar.png';
 
@@ -60,6 +61,23 @@ const My = () => {
         duration: 2000,
       });
     }
+  };
+
+  const handleClearCache = () => {
+    Taro.showModal({
+      title: '清理缓存',
+      content: '确定要清理所有缓存吗？清理后需要重新加载数据。',
+      success: (res) => {
+        if (res.confirm) {
+          clearStorageSync();
+          showToast({
+            icon: 'success',
+            title: '缓存清理成功',
+            duration: 2000,
+          });
+        }
+      },
+    });
   };
 
   useShareTimeline(() => {
@@ -198,13 +216,11 @@ const My = () => {
               })
             }
           /> */}
-          <List
-            title='实验功能'
-            icon='experiment'
+           <List
+            title='清理缓存'
+            icon='close-circle'
             arrow
-            onClick={() =>
-              Taro.navigateTo({ url: `/pages/laboratory/laboratory` })
-            }
+            onClick={handleClearCache}
           />
           <List
             title='相册'
@@ -218,6 +234,7 @@ const My = () => {
             arrow
             onClick={() => Taro.navigateTo({ url: `/pages/about/about` })}
           />
+   
         </View>
       </View>
       <Donate visible={modalVisible} setVisible={setModalVisible} />

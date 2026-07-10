@@ -1,0 +1,98 @@
+.hotPosts {
+  padding: 20rpx;
+  background: $color-background;
+  margin-bottom: 20rpx;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+
+    .titleWrapper {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        font-size: 36rpx;
+        margin-right: 12rpx;
+      }
+
+      .title {
+        font-size: 32rpx;
+        font-weight: bold;
+        color: $color-default;
+      }
+    }
+  }
+
+  .list {
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 20rpx 0;
+      border-bottom: 1rpx solid $color-background-deep;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .rank {
+        width: 60rpx;
+        height: 60rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20rpx;
+
+        .rankText {
+          font-size: 36rpx;
+          font-weight: bold;
+          color: #999;
+
+          &.topThree {
+            color: $color-link;
+          }
+        }
+      }
+
+      .info {
+        flex: 1;
+        min-width: 0;
+
+        .postTitle {
+          display: block;
+          font-size: 28rpx;
+          font-weight: bold;
+          color: $color-default;
+          margin-bottom: 8rpx;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .postExcerpt {
+          display: block;
+          font-size: 24rpx;
+          color: $color-middle;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      .coverWrapper {
+        width: 100rpx;
+        height: 100rpx;
+        margin-left: 20rpx;
+        border-radius: 8rpx;
+        overflow: hidden;
+
+        .cover {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}

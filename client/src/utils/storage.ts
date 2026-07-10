@@ -34,3 +34,11 @@ export const getStorageSync = (key: string) => {
     console.error(e);
   }
 };
+
+export const clearStorageSync = () => {
+  try {
+    Taro.clearStorageSync();
+  } catch (e) {
+    console.error(e);
+  }
+};

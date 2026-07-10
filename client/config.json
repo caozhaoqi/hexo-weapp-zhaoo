@@ -1,5 +1,6 @@
 {
   "baseUrl": "https://caozhaoqi.github.io/api",
+  "cdnUrl": "https://cdn.jsdelivr.net/gh/caozhaoqi/caozhaoqi.github.io/api",
   "webUrl": "https://caozhaoqi.github.io",
   "donate": {
     "wechat": "https://caozhaoqi.github.io/medias/logo.png",

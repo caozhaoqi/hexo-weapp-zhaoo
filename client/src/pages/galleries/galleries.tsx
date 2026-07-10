@@ -64,7 +64,6 @@ const Galleries = () => {
   }, []);
 
   usePullDownRefresh(() => {
-    console.log('[时间轴] 下拉刷新');
     refresh();
     try {
       vibrateShort();
@@ -75,15 +74,13 @@ const Galleries = () => {
 
   const loadTimelineData = useCallback(async () => {
     const cached = getStorageSync(TIMELINE_CACHE_KEY) as TimelineCacheData | null;
-    if (cached) {
+    // console.log('[时间轴] 缓存数据:', cached);
+    if (cached && cached.groupedPosts) {
       const now = Date.now();
       if (now - cached.timestamp < TIMELINE_CACHE_EXPIRE) {
-        console.log('[时间轴] 从缓存加载数据, 共', cached.groupedPosts.length, '组');
         setGroupedPosts(cached.groupedPosts);
         setIsLoading(false);
         return;
-      } else {
-        console.log('[时间轴] 缓存已过期，重新加载');
       }
     }
     await fetchTimelineData();
@@ -95,7 +92,6 @@ const Galleries = () => {
         groupedPosts: data,
         timestamp: Date.now(),
       });
-      console.log('[时间轴] 缓存已保存, 共', data.length, '组');
     } catch (e) {
       console.warn('[时间轴] 缓存保存失败:', e);
     }
@@ -111,6 +107,7 @@ const Galleries = () => {
 
       while (hasMore && page <= MAX_PAGES) {
         const res = await getPosts(page);
+        console.log('[时间轴] 获取第', page, '页数据:', res);
         if (res && res.data && res.data.length > 0) {
           allPosts.push(...res.data);
           if (res.pageCount) {
@@ -120,9 +117,23 @@ const Galleries = () => {
             }
           }
           page++;
+        } else if (res && res.length > 0) {
+          allPosts.push(...res);
+          page++;
+          if (res.length < 10) {
+            hasMore = false;
+          }
         } else {
           hasMore = false;
         }
+      }
+
+      console.log('[时间轴] 总共获取到', allPosts.length, '篇文章');
+
+      if (allPosts.length === 0) {
+        console.warn('[时间轴] 未获取到任何文章数据');
+        setGroupedPosts([]);
+        return;
       }
 
       allPosts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
@@ -167,7 +178,6 @@ const Galleries = () => {
 
   const handleImageError = (url: string) => {
     setFailedImages((prev) => new Set(prev).add(url));
-    console.warn('[时间轴] 图片加载失败:', url);
   };
 
   const getCoverUrl = (post: IPostItem, index: number): string => {

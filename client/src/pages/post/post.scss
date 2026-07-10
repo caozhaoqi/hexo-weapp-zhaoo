@@ -333,4 +333,168 @@
       margin-bottom: 1rem;
     }
   }
+
+  .toc-btn {
+    position: fixed;
+    right: 24rpx;
+    bottom: 200rpx;
+    width: 88rpx;
+    height: 88rpx;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+    z-index: 100;
+
+    &:active {
+      background: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .toc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .toc-modal-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .toc-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 70vh;
+    background: #fff;
+    border-radius: 24rpx 24rpx 0 0;
+    animation: slideUp 0.3s ease;
+    z-index: 1;
+  }
+
+  .toc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32rpx;
+    border-bottom: 1rpx solid #f0f0f0;
+  }
+
+  .toc-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .toc-close {
+    width: 64rpx;
+    height: 64rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toc-list {
+    max-height: calc(70vh - 120rpx);
+  }
+  
+  .toc-list-inner {
+    padding: 16rpx 0;
+  }
+
+  .toc-item {
+    padding: 24rpx 32rpx;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+
+    &:active {
+      background: #f5f5f5;
+    }
+
+    text {
+      font-size: 28rpx;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    &.level-1 {
+      padding-left: 48rpx;
+      text {
+        font-size: 30rpx;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+
+    &.level-2 {
+      padding-left: 64rpx;
+      text {
+        font-size: 28rpx;
+        color: #444;
+      }
+    }
+
+    &.level-3 {
+      padding-left: 80rpx;
+      text {
+        font-size: 26rpx;
+        color: #555;
+      }
+    }
+
+    &.level-4 {
+      padding-left: 96rpx;
+      text {
+        font-size: 26rpx;
+        color: #666;
+      }
+    }
+
+    &.level-5 {
+      padding-left: 112rpx;
+      text {
+        font-size: 24rpx;
+        color: #777;
+      }
+    }
+
+    &.level-6 {
+      padding-left: 128rpx;
+      text {
+        font-size: 24rpx;
+        color: #888;
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
 }

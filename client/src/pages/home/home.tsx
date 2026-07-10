@@ -1,12 +1,14 @@
-import { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
+import { useShareAppMessage, useShareTimeline, showToast } from '@tarojs/taro';
 import { ScrollView, View, Text, Input, Image } from '@tarojs/components';
 import usePagination from '@/hooks/usePagination';
 import PostItem from '@/components/post-item';
 import LiteLoading from '@/components/lite-loading';
 import Skeleton from '@/components/skeleton';
+import HotPosts from '@/components/hot-posts';
 import { useState, useEffect } from 'react';
 import { getGalleries } from '@/apis/api';
 import { IGalleryItem } from '@/types/gallery';
+import { getSearchHistory, addSearchHistory, clearSearchHistory, HOT_SEARCH_KEYWORDS } from '@/utils/index';
 import './home.scss';
 import Taro from '@tarojs/taro';
 
@@ -38,12 +40,51 @@ const DEFAULT_GALLERIES: IGalleryItem[] = [
 const Home = () => {
   const [posts, hasMore, isLoading, { allTags, sortBy, setSortBy, selectedTag, setSelectedTag, searchKeyword, setSearchKeyword }] = usePagination();
   const [galleries, setGalleries] = useState<IGalleryItem[]>([]);
+  const [isGalleriesLoading, setIsGalleriesLoading] = useState<boolean>(true);
+  const [searchFocused, setSearchFocused] = useState<boolean>(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    setSearchHistory(getSearchHistory());
+  }, []);
+
+  const handleSearchConfirm = () => {
+    if (searchKeyword.trim()) {
+      addSearchHistory(searchKeyword);
+      setSearchHistory(getSearchHistory());
+    }
+  };
+
+  const handleClearHistory = () => {
+    Taro.showModal({
+      title: '清除搜索历史',
+      content: '确定要清除所有搜索历史吗？',
+      success: (res) => {
+        if (res.confirm) {
+          clearSearchHistory();
+          setSearchHistory([]);
+          showToast({
+            title: '清除成功',
+            icon: 'success',
+            duration: 2000,
+          });
+        }
+      },
+    });
+  };
+
+  const handleHotSearchClick = (keyword: string) => {
+    setSearchKeyword(keyword);
+    addSearchHistory(keyword);
+    setSearchHistory(getSearchHistory());
+  };
 
   useEffect(() => {
     fetchGalleries();
   }, []);
 
   const fetchGalleries = async () => {
+    setIsGalleriesLoading(true);
     try {
       const res = await getGalleries();
       if (res && Array.isArray(res) && res.length > 0) {
@@ -54,6 +95,8 @@ const Home = () => {
     } catch (e) {
       console.error('[相册] 请求异常:', e);
       setGalleries(DEFAULT_GALLERIES);
+    } finally {
+      setIsGalleriesLoading(false);
     }
   };
 
@@ -86,41 +129,106 @@ const Home = () => {
   });
 
   return (
-    <ScrollView className='home' scrollY scrollX={false}>
+    <View className='home-wrapper'>
       <View className='search-bar'>
+        <View className='search-icon'>
+          <Text className='icon-text'></Text>
+        </View>
         <Input
           className='search-input'
           placeholder='搜索文章标题、内容或标签'
           value={searchKeyword}
           onInput={(e: any) => setSearchKeyword(e.detail.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          onConfirm={() => handleSearchConfirm()}
           type='text'
+          confirmType='search'
+          adjustPosition={false}
         />
-      </View>
-      <View className='sort-bar'>
-        <View
-          className={`sort-item ${sortBy === 'latest' ? 'active' : ''}`}
-          onClick={() => setSortBy('latest')}
-        >
-          <Text>最新发布</Text>
-        </View>
-        <View
-          className={`sort-item ${sortBy === 'earliest' ? 'active' : ''}`}
-          onClick={() => setSortBy('earliest')}
-        >
-          <Text>最早发布</Text>
-        </View>
+        {searchKeyword && (
+          <View className='search-clear' onClick={() => setSearchKeyword('')}>
+            <Text className='clear-icon'>✕</Text>
+          </View>
+        )}
       </View>
 
-      {posts.length > 0 ? (
-        posts.map((item, index: number) => (
-          <PostItem data={item} key={index} index={index} />
-        ))
-      ) : isLoading ? (
-        <Skeleton loading={true} />
-      ) : null}
-      {!hasMore && posts.length === 0 ? <LiteLoading text='暂无相关文章' /> : null}
-      {!hasMore && posts.length > 0 ? <LiteLoading text='忍把浮名去了，换作浅斟低唱~' /> : null}
-    </ScrollView>
+      <ScrollView className='home' scrollY>
+        <View className='home-inner'>
+          <View className='sort-bar'>
+            <View
+              className={`sort-item ${sortBy === 'latest' ? 'active' : ''}`}
+              onClick={() => setSortBy('latest')}
+            >
+              <Text>最新发布</Text>
+            </View>
+            <View
+              className={`sort-item ${sortBy === 'earliest' ? 'active' : ''}`}
+              onClick={() => setSortBy('earliest')}
+            >
+              <Text>最早发布</Text>
+            </View>
+          </View>
+
+          <HotPosts posts={posts} limit={5} />
+
+          {posts.length > 0 ? (
+            posts.map((item, index: number) => (
+              <PostItem data={item} key={index} index={index} />
+            ))
+          ) : isLoading ? (
+            <Skeleton loading={true} />
+          ) : null}
+          {!hasMore && posts.length === 0 ? <LiteLoading text='暂无相关文章' /> : null}
+          {!hasMore && posts.length > 0 ? <LiteLoading text='忍把浮名去了，换作浅斟低唱~' /> : null}
+        </View>
+      </ScrollView>
+
+      {/* {searchFocused && !searchKeyword && (
+        <View className='search-suggest-overlay'>
+          <View className='search-suggest-container' onClick={(e) => e.stopPropagation()}>
+            {searchHistory.length > 0 && (
+              <View className='search-history'>
+                <View className='history-header'>
+                  <Text className='history-title'>搜索历史</Text>
+                  <View className='history-clear' onClick={() => handleClearHistory()}>
+                    <Text className='clear-text'>清空</Text>
+                  </View>
+                </View>
+                <View className='history-list'>
+                  {searchHistory.map((keyword, index) => (
+                    <View
+                      key={index}
+                      className='history-item'
+                      onClick={() => setSearchKeyword(keyword)}
+                    >
+                      <Text className='keyword'>{keyword}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+            <View className='hot-search'>
+              <View className='hot-header'>
+                <Text className='hot-title'>热门搜索</Text>
+              </View>
+              <View className='hot-list'>
+                {HOT_SEARCH_KEYWORDS.map((keyword, index) => (
+                  <View
+                    key={index}
+                    className='hot-item'
+                    onClick={() => handleHotSearchClick(keyword)}
+                  >
+                    <Text className='hot-keyword'>{keyword}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </View>
+          <View className='search-suggest-mask' onClick={() => setSearchFocused(false)} />
+        </View>
+      )} */}
+    </View>
   );
 };
 

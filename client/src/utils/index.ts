@@ -54,7 +54,6 @@ export const requestUserProfile = async (): Promise<IUserInfo> => {
       province: userInfo.province || '',
     };
   } catch (e) {
-    console.log('[授权] getUserProfile失败:', e);
     try {
       const res = await Taro.getUserInfo({});
       const { userInfo } = res;
@@ -69,7 +68,6 @@ export const requestUserProfile = async (): Promise<IUserInfo> => {
         province: userInfo.province || '',
       };
     } catch (e2) {
-      console.log('[授权] getUserInfo也失败，使用默认用户信息:', e2);
       const defaultUser: IUserInfo = {
         avatarUrl: '',
         nickName: '访客',
@@ -188,3 +186,22 @@ export const incrementCounter = (words: string): void => {
   }
   setStorageSync('counters', counters);
 };
+
+export const getSearchHistory = (): string[] => {
+  return getStorageSync('search_history') || [];
+};
+
+export const addSearchHistory = (keyword: string): void => {
+  if (!keyword.trim()) return;
+  const history = getSearchHistory();
+  const filtered = history.filter((k) => k !== keyword.trim());
+  filtered.unshift(keyword.trim());
+  const limited = filtered.slice(0, 10);
+  setStorageSync('search_history', limited);
+};
+
+export const clearSearchHistory = (): void => {
+  setStorageSync('search_history', []);
+};
+
+export const HOT_SEARCH_KEYWORDS = ['React', 'TypeScript', '前端', 'JavaScript', '小程序'];

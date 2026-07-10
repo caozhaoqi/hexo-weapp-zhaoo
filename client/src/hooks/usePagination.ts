@@ -28,7 +28,7 @@ interface IUsePagination {
 }
 
 const CACHE_KEY = 'posts_cache';
-const CACHE_EXPIRE = 5 * 60 * 1000;
+const CACHE_EXPIRE = 60 * 60 * 1000;
 
 const parseTags = (tags: any): string[] => {
   if (!tags) return [];
@@ -87,14 +87,13 @@ const usePagination: IUsePagination = () => {
     if (isInitialized && !allDataLoaded && totalPages > 0 && (sortBy !== 'latest' || selectedTag)) {
       loadAllData();
     }
-  }, [sortBy, selectedTag, totalPages]);
+  }, [sortBy, selectedTag, totalPages, allDataLoaded]);
 
   const initData = () => {
     const cached = getStorageSync(CACHE_KEY);
     if (cached) {
       const now = Date.now();
       if (now - cached.timestamp < CACHE_EXPIRE) {
-        console.log('[分页] 从缓存加载数据, 共', cached.data.length, '条');
         setCurrentData(cached.data);
         setCurrentPage(cached.currentPage);
         setTotalPages(cached.totalPages);
@@ -102,11 +101,8 @@ const usePagination: IUsePagination = () => {
         setIsInitialized(true);
         if (cached.currentPage >= cached.totalPages) {
           setAllDataLoaded(true);
-          console.log('[分页] 缓存数据已完整，跳过后续加载');
         }
         return;
-      } else {
-        console.log('[分页] 缓存已过期，重新加载');
       }
     }
     setIsInitialized(true);
@@ -121,7 +117,6 @@ const usePagination: IUsePagination = () => {
         totalPages: total,
         timestamp: Date.now(),
       });
-      console.log('[分页] 缓存已更新, 当前页数:', page, '/', total, ', 数据量:', data.length);
     } catch (e) {
       console.warn('[分页] 缓存保存失败:', e);
     }
@@ -129,7 +124,6 @@ const usePagination: IUsePagination = () => {
 
   const loadAllData = async () => {
     if (allDataLoaded || isLoading) return;
-    console.log('[分页] 开始加载全量数据');
     setIsLoading(true);
 
     try {
@@ -154,7 +148,6 @@ const usePagination: IUsePagination = () => {
       setAllDataLoaded(true);
       setHasMore(false);
       saveCache(uniquePosts, totalPages, totalPages);
-      console.log('[分页] 全量数据加载完成, 共', uniquePosts.length, '条');
     } catch (error) {
       console.error('[分页] 全量数据加载失败:', error);
     } finally {
@@ -164,7 +157,6 @@ const usePagination: IUsePagination = () => {
 
   useReachBottom(() => {
     if (isLoading || !hasMore || allDataLoaded) return;
-    console.log('[分页] 触底加载更多, 当前页码:', currentPage, ', 是否还有更多:', hasMore);
     getMoreData();
     try {
       vibrateShort();
@@ -174,7 +166,6 @@ const usePagination: IUsePagination = () => {
   });
 
   usePullDownRefresh(() => {
-    console.log('[分页] 下拉刷新');
     refresh();
     try {
       vibrateShort();
@@ -184,20 +175,16 @@ const usePagination: IUsePagination = () => {
   });
 
   const fetchData = async () => {
-    console.log('[分页] 开始请求数据, 页码:', currentPage);
     try {
       const result = await getPosts(currentPage);
       if (!result) {
-        console.log('[分页] 请求返回为空');
         setHasMore(false);
         return;
       }
 
       const { data, pageCount } = result;
-      console.log('[分页] 请求返回, 页码:', currentPage, ', 数据:', data?.length || 0, ', 总页数:', pageCount);
 
       if (!data || !pageCount || data.length === 0) {
-        console.log('[分页] 无数据或请求失败, 停止加载');
         setHasMore(false);
       } else {
         setTotalPages(pageCount);
@@ -211,7 +198,6 @@ const usePagination: IUsePagination = () => {
 
         const hasMoreData = currentPage < pageCount;
         setHasMore(hasMoreData);
-        console.log('[分页] 更新数据, 当前页码:', currentPage, ', 总页数:', pageCount, ', 是否还有更多:', hasMoreData, ', 总数据量:', uniqueData.length);
 
         saveCache(uniqueData, currentPage, pageCount);
       }

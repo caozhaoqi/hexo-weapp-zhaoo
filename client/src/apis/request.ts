@@ -59,8 +59,12 @@ const makeRequest = async (
   headers: any,
   timeout: number
 ): Promise<any> => {
+  const startTime = Date.now();
+  
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
+      const duration = Date.now() - startTime;
+      console.error(`[API] 请求超时: ${method} ${url} (耗时: ${duration}ms)`);
       reject(new Error('Request timeout'));
     }, timeout);
     
@@ -79,11 +83,13 @@ const makeRequest = async (
         if (statusCode === HTTP_STATUS.SUCCESS) {
           resolve(responseData);
         } else {
+          console.error(`[API] 请求失败: ${method} ${url} (状态码: ${statusCode})`);
           reject(new Error(`Error: code ${statusCode}`));
         }
       })
       .catch((error) => {
         clearTimeout(timer);
+        console.error(`[API] 请求异常: ${method} ${url} (错误: ${error.message})`);
         reject(error);
       });
   });
@@ -109,7 +115,11 @@ export const request = async (config: RequestConfig) => {
     if (cached) {
       const now = Date.now();
       if (now - cached.timestamp < cacheExpire) {
+        const cacheAge = Math.floor((now - cached.timestamp) / 1000);
+        console.log(`[API] 缓存命中: ${url} (缓存时间: ${cacheAge}秒前)`);
         return cached.data;
+      } else {
+        console.log(`[API] 缓存过期: ${url}`);
       }
     }
   }
@@ -123,7 +133,8 @@ export const request = async (config: RequestConfig) => {
   const attemptRequest = async (): Promise<any> => {
     let lastError: Error | null = null;
     
-    for (const { name, url: sourceBaseUrl } of sources) {
+    for (let i = 0; i < sources.length; i++) {
+      const { name, url: sourceBaseUrl } = sources[i];
       const fullUrl = base ? sourceBaseUrl + url : url;
       
       try {
@@ -145,6 +156,7 @@ export const request = async (config: RequestConfig) => {
       }
     }
     
+    console.error(`[API] 所有源均失败: ${url}`);
     return null;
   };
   

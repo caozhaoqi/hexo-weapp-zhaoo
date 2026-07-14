@@ -28,6 +28,7 @@ const My = () => {
   const [hasUserInfo, setHasUserInfo] = useState<boolean>(false);
   const [nickName, setNickName] = useState<string>('');
   const [avatarUrl, setAvatarUrl] = useState<string>('');
+  
 
   useEffect(() => {
     fetchMotto();
@@ -61,23 +62,6 @@ const My = () => {
         duration: 2000,
       });
     }
-  };
-
-  const handleClearCache = () => {
-    Taro.showModal({
-      title: '清理缓存',
-      content: '确定要清理所有缓存吗？清理后需要重新加载数据。',
-      success: (res) => {
-        if (res.confirm) {
-          clearStorageSync();
-          showToast({
-            icon: 'success',
-            title: '缓存清理成功',
-            duration: 2000,
-          });
-        }
-      },
-    });
   };
 
   useShareTimeline(() => {
@@ -216,17 +200,17 @@ const My = () => {
               })
             }
           /> */}
-           <List
-            title='清理缓存'
-            icon='close-circle'
-            arrow
-            onClick={handleClearCache}
-          />
           <List
             title='相册'
             icon='earth'
             arrow
             onClick={() => Taro.navigateTo({ url: `/pages/gallery/gallery?name=摄影作品` })}
+          />
+          <List
+            title='开发者功能'
+            icon='experiment'
+            arrow
+            onClick={() => Taro.navigateTo({ url: '/pages/developer/developer' })}
           />
           <List
             title='关于应用'

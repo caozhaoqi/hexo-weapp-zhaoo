@@ -171,8 +171,6 @@ const Post = () => {
     getCurrentInstance().router?.params.slug || ''
   );
   const { theme } = useTheme();
-  const htmlRef = useRef<{ navigateTo: (id: string, offset?: number) => Promise<void> } | null>(null);
-
   useEffect(() => {
     fetchPost();
   }, []);
@@ -224,17 +222,7 @@ const Post = () => {
   const handleTocClick = (id: string) => {
     setShowToc(false);
     console.log('[目录] 点击目录项:', id);
-    
-    if (htmlRef.current) {
-      htmlRef.current.navigateTo(id, 100).then(() => {
-        console.log('[目录] 滚动成功');
-      }).catch((err) => {
-        console.warn('[目录] mp-html滚动失败:', err);
-        fallbackScrollTo(id);
-      });
-    } else {
-      fallbackScrollTo(id);
-    }
+    fallbackScrollTo(id);
   };
   
   const fallbackScrollTo = (id: string) => {
@@ -316,7 +304,6 @@ const Post = () => {
           </View>
           <View className='content'>
             <mp-html
-              // ref={htmlRef}
               content={content}
               preview-img={true}
               selectable={true}
@@ -338,41 +325,9 @@ const Post = () => {
             />
           </View>
           <Fab post={post} />
-          {/* {toc.length > 0 && (
-            <View className='toc-btn' onClick={() => setShowToc(true)}>
-              <Icon name='iconlist' size={24} />
-            </View>
-          )} */}
+         
         </View>
       ) : null}
-      {/* <Donate visible={modalVisible} setVisible={setModalVisible} /> */}
-      
-      {/* {showToc && (
-        <View className='toc-modal'>
-          <View className='toc-modal-mask' onClick={() => setShowToc(false)} />
-          <View className='toc-content'>
-            <View className='toc-header'>
-              <Text className='toc-title'>文章目录</Text>
-              <View className='toc-close' onClick={() => setShowToc(false)}>
-                <Icon name='iconclose' size={24} />
-              </View>
-            </View>
-            <ScrollView className='toc-list' scrollY>
-              <View className='toc-list-inner'>
-                {toc.map((item, index) => (
-                  <View
-                    key={index}
-                    className={`toc-item level-${item.level}`}
-                    onClick={() => handleTocClick(item.id)}
-                  >
-                    <Text>{item.text}</Text>
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      )} */}
     </>
   );
 };

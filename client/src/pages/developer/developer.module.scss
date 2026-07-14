@@ -1,0 +1,209 @@
+// ===== 治愈系插画风主题变量定义 =====
+$color-cozy-primary: #9c7482;      // 温柔粉黛色（主色，对应截图激活状态）
+$color-cozy-bg: #f7f5f2;           // 温暖米杏底色
+$color-cozy-text-main: #5c524d;    // 暖可可褐（主字色，避免生硬纯黑）
+$color-cozy-text-light: #a69a93;   // 哑光麦芽灰（副字色）
+$color-cozy-border: #ede9e4;       // 手账虚线/边框淡灰
+$color-cozy-white: #ffffff;
+
+.container {
+  position: relative;
+  width: 750px;
+  min-height: 100vh;
+  background-color: $color-cozy-bg;
+  padding-bottom: 64rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+.header {
+  // 采用温馨柔和的双色温润渐变，贴合插画氛围
+  background: linear-gradient(135deg, #faf6f0 0%, #f3e9dc 100%);
+  padding: 90rpx 5vw 110rpx;
+  border-radius: 0 0 56rpx 56rpx;
+  border-bottom: 2rpx solid $color-cozy-border;
+  box-shadow: 0 8rpx 32rpx rgba(92, 82, 77, 0.04);
+
+  .headerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title {
+      font-size: 44rpx;
+      font-weight: 700;
+      color: $color-cozy-text-main;
+      margin-bottom: 16rpx;
+      letter-spacing: 4rpx;
+    }
+
+    .version {
+      font-size: 22rpx;
+      font-weight: 600;
+      color: $color-cozy-primary;
+      background-color: rgba($color-cozy-primary, 0.08);
+      padding: 6rpx 28rpx;
+      border-radius: 100rpx; // 完美的胶囊药丸形状
+      border: 2rpx solid rgba($color-cozy-primary, 0.15);
+      letter-spacing: 1rpx;
+    }
+  }
+}
+
+.listWrapper {
+  margin-top: -56rpx; // 优雅盖在 Header 弧度下方
+  padding: 0 4vw;
+  background-color: $color-cozy-white;
+  border-radius: 32rpx;
+  border: 2rpx solid $color-cozy-border;
+  box-shadow: 0 12rpx 36rpx rgba(92, 82, 77, 0.04);
+  overflow: hidden;
+  margin-left: 4vw;
+  margin-right: 4vw;
+}
+
+.section {
+  margin: 36rpx 4vw;
+  background-color: $color-cozy-white;
+  border-radius: 32rpx;
+  overflow: hidden;
+  border: 2rpx solid $color-cozy-border;
+  box-shadow: 0 12rpx 36rpx rgba(92, 82, 77, 0.04);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 30rpx;
+  border-bottom: 2rpx dashed $color-cozy-border; // 采用手账本风格的虚线分割
+
+  .sectionTitle {
+    position: relative;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: $color-cozy-text-main;
+    padding-left: 18rpx;
+
+    // 左侧标志小条改为可爱的圆点
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8rpx;
+      height: 8rpx;
+      background-color: $color-cozy-primary;
+      border-radius: 50%;
+    }
+  }
+
+  .headerRight {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+
+    .logCount {
+      font-size: 22rpx;
+      color: $color-cozy-text-light;
+      background-color: #f6f3ee;
+      padding: 6rpx 20rpx;
+      border-radius: 100rpx;
+      font-weight: 500;
+    }
+
+    .logFilter {
+      font-size: 22rpx;
+      color: $color-cozy-text-main;
+      background-color: #f6f3ee;
+      padding: 6rpx 20rpx;
+      border-radius: 100rpx;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &.active {
+        background-color: $color-cozy-primary;
+        color: $color-cozy-white;
+        box-shadow: 0 6rpx 16rpx rgba($color-cozy-primary, 0.25);
+      }
+    }
+  }
+}
+
+.logContainer {
+  height: 720rpx;
+  padding: 24rpx;
+  background-color: #fdfbf9; // “手账羊皮纸”风格底色，清新温和
+}
+
+.logItem {
+  padding: 16rpx 20rpx;
+  border-bottom: 1rpx dashed rgba(92, 82, 77, 0.08); // 纸张撕扯感虚线
+  border-radius: 12rpx;
+  margin-bottom: 12rpx;
+  background-color: rgba(92, 82, 77, 0.015);
+  display: flex;
+  align-items: flex-start;
+  transition: background-color 0.15s ease;
+
+  &:active {
+    background-color: rgba(92, 82, 77, 0.04);
+  }
+
+  .logTime {
+    font-size: 20rpx;
+    color: $color-cozy-text-light;
+    margin-right: 18rpx;
+    font-family: Consolas, "Courier New", monospace;
+    white-space: nowrap;
+    padding-top: 4rpx;
+  }
+
+  .logContent {
+    flex: 1;
+    font-size: 24rpx;
+    font-family: Consolas, Monaco, Menlo, monospace;
+    word-break: break-all;
+    line-height: 1.5;
+    color: $color-cozy-text-main; // 可可褐色正文
+
+    // 莫兰迪色系日志状态高亮，不刺眼
+    &.logError {
+      color: #c94c4c; // 温暖复古红
+      font-weight: 600;
+    }
+
+    &.logWarn {
+      color: #d97706; // 暖蜜柑橙
+      font-weight: 600;
+    }
+  }
+}
+
+.emptyLogs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  .emptyText {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: $color-cozy-text-light;
+    margin-bottom: 12rpx;
+  }
+
+  .emptyHint {
+    font-size: 22rpx;
+    color: rgba($color-cozy-text-light, 0.7);
+    background-color: rgba(92, 82, 77, 0.03);
+    padding: 6rpx 20rpx;
+    border-radius: 8rpx;
+    border: 2rpx solid rgba(92, 82, 77, 0.05);
+  }
+}

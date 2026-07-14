@@ -9,14 +9,14 @@ const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
 const About = () => {
   useShareTimeline(() => {
     return {
-      title: '关于应用(v2.0.7)',
+      title: '关于应用',
       imageUrl: DEFAULT_SHARE_IMAGE,
     };
   });
 
   useShareAppMessage(() => {
     return {
-      title: '关于应用(v2.0.7)',
+      title: '关于应用',
       path: '/pages/about/about',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
@@ -31,7 +31,7 @@ const About = () => {
   return (
     <View className={styles.about}>
       <Image className={styles.logo} src={logo} mode='aspectFill' />
-      <Text className={styles.title}>Arona static blog(v2.0.7)</Text>
+      <Text className={styles.title}>Arona static blog</Text>
       <View className={styles.listWrapper}>
         <List
           title='GitHub'

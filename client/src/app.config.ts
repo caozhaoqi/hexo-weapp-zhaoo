@@ -10,6 +10,7 @@ export default {
     'pages/about/about',
     'pages/laboratory/laboratory',
     'pages/like/like',
+    'pages/developer/developer',
   ],
   window: {
     backgroundTextStyle: 'light',

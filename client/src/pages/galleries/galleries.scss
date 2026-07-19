@@ -26,7 +26,7 @@
 .loading {
   padding: 100rpx 0;
   text-align: center;
-  color: #999999;
+  color: var(--color-light);
   font-size: 28rpx;
 }
 
@@ -42,7 +42,7 @@
   .date-line {
     flex: 1;
     height: 2rpx;
-    background: #e0e0e0;
+    background: var(--color-border);
   }
 
   .date-line-left {
@@ -63,7 +63,7 @@
 
   .date-text {
     font-size: 28rpx;
-    color: #060606;
+    color: var(--color-default);
     font-weight: bold;
     white-space: nowrap;
   }
@@ -76,12 +76,12 @@
 }
 
 .timeline-item {
-  background: #ffffff;
+  background: var(--color-background);
   border-radius: 20rpx;
   padding: 24rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 12rpx var(--color-shadow);
   transition: transform 0.2s ease;
   width: 100%;
   box-sizing: border-box;
@@ -99,7 +99,7 @@
       display: block;
       font-size: 32rpx;
       font-weight: bold;
-      color: #333333;
+      color: var(--color-default);
       margin-bottom: 12rpx;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -108,7 +108,7 @@
 
     .item-excerpt {
       font-size: 26rpx;
-      color: #999999;
+      color: var(--color-light);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -123,7 +123,7 @@
     flex-shrink: 0;
     border-radius: 12rpx;
     overflow: hidden;
-    background: #f5f5f5;
+    background: var(--color-background-deep);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,8 +136,26 @@
 }
 
 .empty {
-  padding: 100rpx 0;
+  padding: 200rpx 40rpx;
   text-align: center;
-  color: #999999;
-  font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+
+  .empty-icon {
+    font-size: 80rpx;
+    margin-bottom: 8rpx;
+  }
+
+  .empty-text {
+    font-size: 30rpx;
+    color: var(--color-middle);
+    font-weight: 500;
+  }
+
+  .empty-hint {
+    font-size: 24rpx;
+    color: var(--color-light);
+  }
 }

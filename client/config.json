@@ -1,6 +1,12 @@
 {
   "baseUrl": "https://caozhaoqi.github.io/api",
   "cdnUrl": "https://cdn.jsdelivr.net/gh/caozhaoqi/caozhaoqi.github.io/api",
+  "requestTimeout": 5000,
+  "sources": [
+    { "name": "github-pages", "url": "https://caozhaoqi.github.io/api" },
+    { "name": "jsdelivr", "url": "https://cdn.jsdelivr.net/gh/caozhaoqi/caozhaoqi.github.io/api" },
+    { "name": "github-raw", "url": "https://raw.githubusercontent.com/caozhaoqi/caozhaoqi.github.io/master/api" }
+  ],
   "webUrl": "https://caozhaoqi.github.io",
   "donate": {
     "wechat": "https://caozhaoqi.github.io/medias/logo.png",
@@ -17,5 +23,18 @@
   "motto": {
     "api": "https://v1.hitokoto.cn/?encode=text&c=i",
     "default": "～"
+  },
+  "_mirrors": {
+    "_comment": "国内可用的备选镜像源，需要时可在「我的 → 开发者功能 → 数据源管理」手动添加。这些源不会默认启用，避免不可达源拖慢首次启动。",
+    "list": [
+      { "name": "jsdelivr-fastly", "url": "https://fastly.jsdelivr.net/gh/caozhaoqi/caozhaoqi.github.io/api" },
+      { "name": "jsdelivr-gcore", "url": "https://gcore.jsdelivr.net/gh/caozhaoqi/caozhaoqi.github.io/api" },
+      { "name": "gh-proxy", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/caozhaoqi/caozhaoqi.github.io/master/api" },
+      { "name": "ghproxy.net", "url": "https://ghproxy.net/https://raw.githubusercontent.com/caozhaoqi/caozhaoqi.github.io/master/api" },
+      { "name": "gitmirror", "url": "https://raw.gitmirror.com/caozhaoqi/caozhaoqi.github.io/master/api" },
+      { "name": "jsd-zzko", "url": "https://jsd.cdn.zzko.cn/gh/caozhaoqi/caozhaoqi.github.io/api" },
+      { "name": "jsd-onmicrosoft", "url": "https://jsd.onmicrosoft.cn/gh/caozhaoqi/caozhaoqi.github.io/api" }
+    ],
+    "_longterm": "若要根本性提升国内访问速度，建议将 api 目录部署到腾讯云 CloudBase 静态托管 / 阿里云 OSS+CDN / 七牛云 KODO，并将该国内源设为首选。详见《网络请求加速架构方案.html》。"
   }
 }

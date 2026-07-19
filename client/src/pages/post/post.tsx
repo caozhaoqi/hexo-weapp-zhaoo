@@ -7,6 +7,7 @@ import Taro, {
 import { View, Image, Text, ScrollView } from '@tarojs/components';
 import { formateDate } from '@/utils/index';
 import { getPostBySlug } from '@/apis/api';
+import { prefetch } from '@/apis/request';
 import { getStorageSync, setStorageSync } from '@/utils/storage';
 import Icon from '@/components/icon';
 import Loading from '@/components/loading';
@@ -198,30 +199,49 @@ const Post = () => {
 
   const fetchPost = useCallback(async () => {
     if (!slug) return;
-    const data = await getPostBySlug(slug);
-    if (data) {
-      const { more, title } = data;
-      Taro.setNavigationBarTitle({ title });
-      const { processedHtml, imagesArray } = processHtml(more);
-      const generatedToc = generateToc(processedHtml);
-      const htmlWithToc = processHtmlWithToc(processedHtml, generatedToc);
-      const words = countWords(htmlWithToc);
-      
-      data.more = htmlWithToc;
-      setImages(imagesArray);
-      setContent(htmlWithToc);
-      setToc(generatedToc);
-      setWordCount(words);
-      setReadingTime(estimateReadingTime(words));
-      setPost(data);
-      setStatus('ready');
-      setHistoryStorage(data);
+    try {
+      const data = await getPostBySlug(slug);
+      if (data) {
+        const { more, title } = data;
+        Taro.setNavigationBarTitle({ title });
+        const { processedHtml, imagesArray } = processHtml(more);
+        const generatedToc = generateToc(processedHtml);
+        const htmlWithToc = processHtmlWithToc(processedHtml, generatedToc);
+        const words = countWords(htmlWithToc);
+
+        data.more = htmlWithToc;
+        setImages(imagesArray);
+        setContent(htmlWithToc);
+        setToc(generatedToc);
+        setWordCount(words);
+        setReadingTime(estimateReadingTime(words));
+        setPost(data);
+        setStatus('ready');
+        setHistoryStorage(data);
+
+        // ===== 预取相关文章 =====
+        // 从浏览历史中找下一篇未读文章预取，用户读完当前文章后可秒开下一篇
+        try {
+          const history = getStorageSync('history') || [];
+          // 找出与当前文章不同、且 slug 不同于已缓存的文章
+          const nextPost = history.find((item: IPostItem) => item.slug && item.slug !== slug);
+          if (nextPost && nextPost.slug) {
+            prefetch(`/articles/${nextPost.slug}.json`, `post_${nextPost.slug}_cache`, 60 * 60 * 1000).catch(() => {});
+          }
+        } catch {
+          // 预取失败不影响当前文章
+        }
+      } else {
+        setStatus('error');
+      }
+    } catch (e) {
+      console.error('[文章] 获取失败:', e);
+      setStatus('error');
     }
   }, [slug]);
 
   const handleTocClick = (id: string) => {
     setShowToc(false);
-    console.log('[目录] 点击目录项:', id);
     fallbackScrollTo(id);
   };
   
@@ -234,18 +254,52 @@ const Post = () => {
 
   const coverUrl = useMemo(() => getImageUrl(post.cover), [post.cover]);
 
-  const handleLinkTap = (e) => {
+  // 缓存 tag-style 对象，避免每次渲染都创建新对象
+  const tagStyle = useMemo(() => ({
+    p: 'margin-bottom: 16rpx; line-height: 1.8;',
+    h1: 'font-size: 36rpx; font-weight: bold; margin-top: 32rpx; margin-bottom: 16rpx;',
+    h2: 'font-size: 32rpx; font-weight: bold; margin-top: 28rpx; margin-bottom: 14rpx;',
+    h3: 'font-size: 28rpx; font-weight: bold; margin-top: 24rpx; margin-bottom: 12rpx;',
+    ul: 'margin-bottom: 16rpx; padding-left: 32rpx;',
+    ol: 'margin-bottom: 16rpx; padding-left: 32rpx;',
+    li: 'line-height: 1.8; margin-bottom: 8rpx;',
+    blockquote: 'border-left: 6rpx solid #ff3b00; padding-left: 20rpx; margin-bottom: 16rpx; color: #666;',
+    code: theme === 'dark' ? 'background: #333; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace; color: #ccc;' : 'background: #f4f4f4; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace;',
+    pre: theme === 'dark' ? 'background: #2d2d2d; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; color: #ccc; font-family: monospace;' : 'background: #f8f8f8; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; font-family: monospace;',
+  }), [theme]);
+
+  // 缓存 plugins 数组
+  const plugins = useMemo(() => ['highlight'], []);
+
+  // 稳定的链接点击回调，避免每次渲染重建导致 mp-html 内部更新
+  const handleLinkTap = useCallback((e) => {
     const href = e.detail.src;
     if (href) {
       Taro.navigateTo({
-        url: `/pages/webview/webview?url=${encodeURIComponent(href)}`,
+        url: `/pages/extra/webview/webview?url=${encodeURIComponent(href)}`,
       });
     }
-  };
+  }, []);
+
+  // 稳定的错误重试回调
+  const handleRetry = useCallback(() => {
+    setStatus('loading');
+    fetchPost();
+  }, [fetchPost]);
 
   return (
     <>
       {status === 'loading' ? <Loading /> : null}
+      {status === 'error' ? (
+        <View className='post-error'>
+          <Text className='error-icon'>😿</Text>
+          <Text className='error-text'>文章加载失败</Text>
+          <Text className='error-hint'>请检查网络后重试</Text>
+          <View className='error-retry' onClick={handleRetry}>
+            <Text>重新加载</Text>
+          </View>
+        </View>
+      ) : null}
       {status === 'ready' ? (
         <View className='post'>
           <ImmersiveTitlebar title={post.title || ''} />
@@ -308,19 +362,8 @@ const Post = () => {
               preview-img={true}
               selectable={true}
               use-anchor={100}
-              tag-style={{
-                p: 'margin-bottom: 16rpx; line-height: 1.8;',
-                h1: 'font-size: 36rpx; font-weight: bold; margin-top: 32rpx; margin-bottom: 16rpx;',
-                h2: 'font-size: 32rpx; font-weight: bold; margin-top: 28rpx; margin-bottom: 14rpx;',
-                h3: 'font-size: 28rpx; font-weight: bold; margin-top: 24rpx; margin-bottom: 12rpx;',
-                ul: 'margin-bottom: 16rpx; padding-left: 32rpx;',
-                ol: 'margin-bottom: 16rpx; padding-left: 32rpx;',
-                li: 'line-height: 1.8; margin-bottom: 8rpx;',
-                blockquote: 'border-left: 6rpx solid #ff3b00; padding-left: 20rpx; margin-bottom: 16rpx; color: #666;',
-                code: theme === 'dark' ? 'background: #333; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace; color: #ccc;' : 'background: #f4f4f4; padding: 4rpx 8rpx; border-radius: 4rpx; font-family: monospace;',
-                pre: theme === 'dark' ? 'background: #2d2d2d; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; color: #ccc; font-family: monospace;' : 'background: #f8f8f8; padding: 24rpx; border-radius: 8rpx; margin-bottom: 16rpx; overflow-x: auto; font-family: monospace;',
-              }}
-              plugins={['highlight']}
+              tag-style={tagStyle}
+              plugins={plugins}
               onLinkTap={handleLinkTap}
             />
           </View>

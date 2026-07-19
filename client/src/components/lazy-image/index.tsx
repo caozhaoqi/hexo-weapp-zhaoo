@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import Taro from '@tarojs/taro';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Image, View } from '@tarojs/components';
 import styles from './lazy-image.module.scss';
 
@@ -14,10 +13,23 @@ interface LazyImageProps {
   retryCount?: number;
 }
 
-let imageIdCounter = 0;
-
 const DEFAULT_FALLBACK = '/assets/images/logo.png';
 
+/**
+ * LazyImage —— 依赖微信原生 <Image lazyLoad> 实现懒加载。
+ *
+ * 设计说明：
+ * 微信小程序的 IntersectionObserver.observe() 每个实例只能调用一次（与 Web 标准不同），
+ * 因此无法用「共享 observer 池」观察多个元素；若每个 LazyImage 各建一个 observer，
+ * 长列表下 observer 实例数等于图片数，开销同样很大。
+ *
+ * 而微信原生 <Image lazyLoad> 属性已经能在图片进入可视区时才发起图片请求，
+ * 完全满足懒加载需求。因此本组件移除了 IntersectionObserver 逻辑，
+ * 只保留：
+ *   1. 加载完成前显示骨架屏占位（视觉体验）
+ *   2. 失败重试 + fallback 兜底（健壮性）
+ *   3. retry timer 的正确清理（修复内存泄漏）
+ */
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   mode = 'aspectFill',
@@ -28,62 +40,52 @@ const LazyImage: React.FC<LazyImageProps> = ({
   immediate = false,
   retryCount = 2,
 }) => {
-  const [visible, setVisible] = useState(immediate);
   const [loaded, setLoaded] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src);
   const [retryAttempts, setRetryAttempts] = useState(0);
-  const imageId = useMemo(() => `lazy-image-${++imageIdCounter}`, []);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // src 变化时重置状态
   useEffect(() => {
-    if (immediate) {
-      setVisible(true);
-      return;
-    }
+    setCurrentSrc(src);
+    setLoaded(false);
+    setRetryAttempts(0);
+  }, [src]);
 
-    const observer = Taro.createIntersectionObserver({
-      thresholds: [0.1],
-    });
-
-    observer
-      .relativeToViewport({ bottom: 100 })
-      .observe(`#${imageId}`, (res) => {
-        if (res.intersectionRatio > 0) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      });
-
+  // 组件卸载时清理 retry 定时器，避免内存泄漏与「卸载后 setState」警告
+  useEffect(() => {
     return () => {
-      observer.disconnect();
+      if (retryTimer.current) {
+        clearTimeout(retryTimer.current);
+        retryTimer.current = null;
+      }
     };
-  }, [imageId, immediate]);
+  }, []);
 
-  useEffect(() => {
-    if (!immediate && !visible) {
-      setTimeout(() => {
-        setVisible(true);
-      }, 2000);
-    }
-  }, [immediate, visible]);
-
-  const handleLoad = () => {
+  const handleLoad = useCallback(() => {
     setLoaded(true);
     onLoad?.();
-  };
+  }, [onLoad]);
 
-  const handleError = () => {
+  const handleError = useCallback(() => {
     if (retryAttempts < retryCount) {
-      setRetryAttempts(retryAttempts + 1);
-      setTimeout(() => {
+      const nextAttempt = retryAttempts + 1;
+      setRetryAttempts(nextAttempt);
+      // 清理上一次的重试定时器，避免内存泄漏
+      if (retryTimer.current) clearTimeout(retryTimer.current);
+      retryTimer.current = setTimeout(() => {
         setCurrentSrc(src);
       }, 1000 * Math.pow(2, retryAttempts));
     } else {
       setCurrentSrc(fallback);
     }
-  };
+  }, [retryAttempts, retryCount, src, fallback]);
+
+  // immediate 仅控制是否立即开始加载（语义保留），实际懒加载交给 <Image lazyLoad>
+  void immediate;
 
   return (
-    <View className={`${styles.lazyImage} ${className}`} id={imageId}>
+    <View className={`${styles.lazyImage} ${className}`}>
       {!loaded && (
         <View className={styles.placeholder}>
           {placeholder ? (
@@ -95,7 +97,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       )}
       <Image
         className={`${styles.image} ${loaded ? styles.visible : styles.hidden}`}
-        src={visible ? currentSrc : ''}
+        src={currentSrc}
         mode={mode}
         lazyLoad
         onLoad={handleLoad}
@@ -105,4 +107,5 @@ const LazyImage: React.FC<LazyImageProps> = ({
   );
 };
 
-export default LazyImage;
+// 使用 React.memo 避免不必要的重渲染
+export default React.memo(LazyImage);

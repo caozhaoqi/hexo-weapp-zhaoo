@@ -1,5 +1,45 @@
 import Taro from '@tarojs/taro';
 import { setStorageSync, getStorageSync } from '@/utils/storage';
+import config from '../../config.json';
+
+const { baseUrl } = config;
+const baseHost = baseUrl.replace('/api', '');
+
+/**
+ * 统一的图片 URL 处理函数
+ * - 绝对 URL（http/https）直接返回
+ * - 相对路径补全为完整 URL
+ * - 空值返回默认占位图
+ */
+export const getImageUrl = (src: string, defaultCover?: string): string => {
+  if (!src) {
+    return defaultCover || '/assets/images/logo.png';
+  }
+  const decodedSrc = decodeURIComponent(src);
+  if (decodedSrc.startsWith('http://') || decodedSrc.startsWith('https://')) {
+    if (decodedSrc.includes('czq-blog.oss-cn-beijing.aliyuncs.com')) {
+      return decodedSrc.split('?')[0];
+    }
+    return decodedSrc;
+  }
+  const normalizedSrc = decodedSrc.startsWith('/') ? decodedSrc : `/${decodedSrc}`;
+  return baseHost + normalizedSrc;
+};
+
+/** 默认封面图轮换（Unsplash） */
+const DEFAULT_COVERS = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400',
+  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
+  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400',
+  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400',
+  'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400',
+  'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400',
+];
+
+/** 获取按索引轮换的默认封面 */
+export const getDefaultCover = (index: number): string => DEFAULT_COVERS[index % DEFAULT_COVERS.length];
 
 interface IFormateDate {
   (rawDate: string): string;

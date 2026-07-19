@@ -4,8 +4,8 @@
   width: 345px;
   margin: 0 10px 20px 10px;
   border-radius: 15px;
-  background-color: $color-background;
-  box-shadow: $box-shadow;
+  background-color: var(--color-background);
+  box-shadow: 0 2px 20px var(--color-shadow);
 
   .cover {
     width: 345px;
@@ -22,7 +22,7 @@
     @include substr(1);
     font-size: 28px;
     font-weight: bold;
-    color: $color-default;
+    color: var(--color-default);
   }
 
   .count {
@@ -30,6 +30,6 @@
     font-size: 24px;
     text-align: justify;
     text-justify: inter-ideograph;
-    color: $color-middle;
+    color: var(--color-middle);
   }
 }

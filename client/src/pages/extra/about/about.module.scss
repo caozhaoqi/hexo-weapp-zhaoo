@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: $color-background-deep;
+  background-color: var(--color-background-deep);
 
   .logo {
     width: 200px;
@@ -16,7 +16,7 @@
     font-size: 40px;
     font-weight: bold;
     margin-top: 30px;
-    color: $color-default;
+    color: var(--color-default);
   }
 
   .listWrapper {

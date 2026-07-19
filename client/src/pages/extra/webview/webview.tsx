@@ -16,7 +16,7 @@ const Webview = () => {
   useShareAppMessage(() => {
     return {
       title: '网页浏览',
-      path: '/pages/webview/webview',
+      path: '/pages/extra/webview/webview',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
       userName: '',

@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, memo, useMemo, useCallback } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { IPostItem } from '@/types/post';
@@ -43,12 +43,14 @@ interface IPostItemProps {
 const PostItem: FC<IPostItemProps> = ({ data, index = 0 }) => {
   const { title = '', cover, excerpt = '', slug, top } = data;
   const coverUrl = useMemo(() => getImageUrl(cover, index), [cover, index]);
-  
+
+  // 稳定的点击回调：slug 不变则函数引用不变，避免子组件因 onClick 变化而失效
+  const handleClick = useCallback(() => {
+    Taro.navigateTo({ url: `/pages/post/post?slug=${slug}` });
+  }, [slug]);
+
   return (
-    <View
-      className={styles.postItem}
-      onClick={() => Taro.navigateTo({ url: `/pages/post/post?slug=${slug}` })}
-    >
+    <View className={styles.postItem} onClick={handleClick}>
       {top ? <View className={styles.top} /> : null}
       <LazyImage
         className={styles.cover}
@@ -63,4 +65,4 @@ const PostItem: FC<IPostItemProps> = ({ data, index = 0 }) => {
   );
 };
 
-export default PostItem;
+export default memo(PostItem);

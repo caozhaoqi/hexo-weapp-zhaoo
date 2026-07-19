@@ -6,6 +6,7 @@ import {
   stopPullDownRefresh,
 } from '@tarojs/taro';
 import { getPosts } from '@/apis/api';
+import { prefetch } from '@/apis/request';
 import { IPostItem } from '@/types/post';
 import { setStorageSync, getStorageSync } from '@/utils/storage';
 
@@ -65,6 +66,8 @@ const usePagination: IUsePagination = () => {
   const [sortBy, setSortBy] = useState<'latest' | 'earliest'>('latest');
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
+  // 预取防重复标记：每页生命周期内只预取一次文章详情
+  const prefetchedPostsRef = useRef<boolean>(false);
 
   useEffect(() => {
     initData();
@@ -127,22 +130,28 @@ const usePagination: IUsePagination = () => {
     setIsLoading(true);
 
     try {
+      // 并行加载所有页面（分批控制并发数）
+      const BATCH_SIZE = 5;
+      const allPages = Array.from({ length: totalPages }, (_, i) => i + 1);
       let allPosts: IPostItem[] = [];
-      let nextPage = 1;
 
-      while (nextPage <= totalPages) {
-        const result = await getPosts(nextPage);
-        if (result && result.data && result.data.length > 0) {
-          allPosts = allPosts.concat(result.data);
-          nextPage++;
-        } else {
-          break;
-        }
+      for (let i = 0; i < allPages.length; i += BATCH_SIZE) {
+        const batch = allPages.slice(i, i + BATCH_SIZE);
+        const results = await Promise.all(batch.map((p) => getPosts(p).catch(() => null)));
+        results.forEach((result) => {
+          if (result && result.data && result.data.length > 0) {
+            allPosts = allPosts.concat(result.data);
+          }
+        });
       }
 
-      const uniquePosts = allPosts.filter((post, index, self) =>
-        index === self.findIndex((p) => p.slug === post.slug)
-      );
+      const slugMap = new Map<string, IPostItem>();
+      for (const post of allPosts) {
+        if (post.slug && !slugMap.has(post.slug)) {
+          slugMap.set(post.slug, post);
+        }
+      }
+      const uniquePosts = Array.from(slugMap.values());
 
       setCurrentData(uniquePosts);
       setAllDataLoaded(true);
@@ -189,17 +198,37 @@ const usePagination: IUsePagination = () => {
       } else {
         setTotalPages(pageCount);
         let newData = currentPage === 1 ? data : currentData.concat(data);
-        
-        const uniqueData = newData.filter((post, index, self) =>
-          index === self.findIndex((p) => p.slug === post.slug)
-        );
-        
+
+        const slugMap = new Map<string, IPostItem>();
+        for (const post of newData) {
+          if (post.slug && !slugMap.has(post.slug)) {
+            slugMap.set(post.slug, post);
+          }
+        }
+        const uniqueData = Array.from(slugMap.values());
+
         setCurrentData(uniqueData);
 
         const hasMoreData = currentPage < pageCount;
         setHasMore(hasMoreData);
 
         saveCache(uniqueData, currentPage, pageCount);
+
+        // ===== 数据预取 =====
+        // 1. 首页加载第一页后，预取第二页（用户大概率下滑）
+        if (currentPage === 1 && hasMoreData) {
+          prefetch(`/posts/2.json`, `posts_2_cache`, CACHE_EXPIRE).catch(() => {});
+        }
+        // 2. 预取前 3 篇文章的详情（用户最可能点这几篇）
+        //    只在首页且未预取过时触发一次
+        if (currentPage === 1 && !prefetchedPostsRef.current) {
+          prefetchedPostsRef.current = true;
+          data.slice(0, 3).forEach((post: IPostItem) => {
+            if (post.slug) {
+              prefetch(`/articles/${post.slug}.json`, `post_${post.slug}_cache`, CACHE_EXPIRE).catch(() => {});
+            }
+          });
+        }
       }
     } catch (error) {
       console.error('[分页] 请求异常:', error);

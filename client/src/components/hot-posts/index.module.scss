@@ -1,7 +1,9 @@
 .hotPosts {
   padding: 20rpx;
-  background: $color-background;
+  background: var(--color-background);
   margin-bottom: 20rpx;
+  /* 隔离子树布局/绘制，避免热门文章模块的状态变化扩散到外层 */
+  contain: layout style;
 
   .header {
     display: flex;
@@ -21,7 +23,7 @@
       .title {
         font-size: 32rpx;
         font-weight: bold;
-        color: $color-default;
+        color: var(--color-default);
       }
     }
   }
@@ -31,7 +33,7 @@
       display: flex;
       align-items: center;
       padding: 20rpx 0;
-      border-bottom: 1rpx solid $color-background-deep;
+      border-bottom: 1rpx solid var(--color-background-deep);
 
       &:last-child {
         border-bottom: none;
@@ -51,7 +53,7 @@
           color: #999;
 
           &.topThree {
-            color: $color-link;
+            color: var(--color-link);
           }
         }
       }
@@ -64,7 +66,7 @@
           display: block;
           font-size: 28rpx;
           font-weight: bold;
-          color: $color-default;
+          color: var(--color-default);
           margin-bottom: 8rpx;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -74,7 +76,7 @@
         .postExcerpt {
           display: block;
           font-size: 24rpx;
-          color: $color-middle;
+          color: var(--color-middle);
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;

@@ -62,7 +62,8 @@
   height: 12rpx;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
+  /* 仅过渡尺寸/颜色/圆角，避免 all 触发非必要重排 */
+  transition: width 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease;
 
   &.active {
     width: 32rpx;

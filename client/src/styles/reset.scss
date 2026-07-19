@@ -1,15 +1,52 @@
 @import './variable.scss';
 
+// ===== CSS 自定义属性 —— 亮色主题（默认）=====
 page {
+  --color-default: #33333d;
+  --color-middle: #555555;
+  --color-light: #999999;
+  --color-background: #ffffff;
+  --color-background-deep: #f5f7f9;
+  --color-link: #ff3b00;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-border: #ebedf0;
+  --color-shadow: rgba(0, 0, 0, 0.15);
+  --color-skeleton-1: #f0f0f0;
+  --color-skeleton-2: #e0e0e0;
+  --color-skeleton-3: #f5f5f5;
+  --color-tag-bg: #f5f5f5;
+  --color-modal-bg: #ffffff;
+  --color-modal-hover: #f5f5f5;
+  --color-divider: #cccccc;
+  --color-input-bg: #f5f5f5;
+
   font-family: 'Hiragino Sans GB', 'Hiragino Sans GB W3', 'Microsoft YaHei',
     'WenQuanYi Micro Hei', sans-serif;
-  background-color: $color-background-deep;
+  background-color: var(--color-background-deep);
   min-height: 100vh;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-  &.dark {
-    background-color: $color-background-deep-dark;
-  }
+// ===== 暗色主题覆盖 =====
+// 通过 Taro.setPageStyle 注入 CSS 变量覆盖值
+// 此处保留 page.dark 类选择器作为兜底
+page.dark {
+  --color-default: #dddddd;
+  --color-middle: #9899ab;
+  --color-light: #7d8594;
+  --color-background: #1e2128;
+  --color-background-deep: #1a1d22;
+  --color-border: #2d3038;
+  --color-shadow: rgba(0, 0, 0, 0.35);
+  --color-skeleton-1: #2a2d35;
+  --color-skeleton-2: #23252c;
+  --color-skeleton-3: #2d3038;
+  --color-tag-bg: #2a2d35;
+  --color-modal-bg: #25282f;
+  --color-modal-hover: #2d3038;
+  --color-divider: #3a3d45;
+  --color-input-bg: #2a2d35;
 }
 
 view,

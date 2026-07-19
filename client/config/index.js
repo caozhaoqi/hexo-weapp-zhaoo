@@ -48,6 +48,11 @@ const config = {
     miniCssExtractPluginOption: {
       ignoreOrder: true,
     },
+    optimize: {
+      // 开启主包/分包压缩
+      mainPackage: true,
+      subPackages: true,
+    },
     postcss: {
       pxtransform: {
         enable: true,
@@ -66,6 +71,22 @@ const config = {
           generateScopedName: '[name]__[local]___[hash:5]',
         },
       },
+    },
+    webpackChain(chain) {
+      // 公共代码提取，减少重复打包
+      chain.merge({
+        optimization: {
+          splitChunks: {
+            cacheGroups: {
+              common: {
+                name: 'common',
+                minChunks: 2,
+                chunks: 'all',
+              },
+            },
+          },
+        },
+      });
     },
   },
   h5: {

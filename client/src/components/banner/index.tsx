@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { View, Image, Text } from '@tarojs/components';
 import { banners } from '../../config/banners';
 import styles from './banner.module.scss';
@@ -19,6 +19,7 @@ const Banner: React.FC = () => {
         className={styles.bannerImage}
         src={currentBanner.image}
         mode='aspectFill'
+        lazyLoad
       />
       <View className={styles.bannerOverlay} />
       <View className={styles.bannerContent}>
@@ -37,4 +38,4 @@ const Banner: React.FC = () => {
   );
 };
 
-export default Banner;
+export default memo(Banner);

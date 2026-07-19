@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import LiteLoading from '@/components/lite-loading';
 import PostList from '@/components/post-list';
-import Icon from '@/components/icon';
 import { getStorageSync } from '@/utils/storage';
-import { formateDate } from '@/utils/index';
 import styles from './history.module.scss';
 
 const DEFAULT_SHARE_IMAGE = 'https://pic3.zhimg.com/80/v2-5f7cb7e900b9dcf5354c3d4d2c5cc3c2_1440w.webp';
@@ -35,7 +33,7 @@ const History = () => {
   useShareAppMessage(() => {
     return {
       title: '浏览历史',
-      path: '/pages/history/history',
+      path: '/pages/extra/history/history',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
       userName: '',
@@ -46,34 +44,33 @@ const History = () => {
     };
   });
 
-  const renderInfoList = (item: IHistoryItem) => {
-    return (
-      <>
-        <View className={styles.infoItem}>
-          <Icon name='icontime-circle' style={{ marginRight: 2 }} />
-          <Text>{formateDate(item.updated)}</Text>
-        </View>
-      </>
-    );
-  };
+  const sortedHistories = useMemo(() => {
+    if (!histories || histories.length === 0) return [];
+    return [...histories].reverse();
+  }, [histories]);
 
   return (
-    <View className={styles}>
-      {histories.length > 0
-        ? histories
-            .reverse()
-            .map((item) => (
+    <View className={styles.history}>
+      {sortedHistories.length > 0
+        ? sortedHistories.map((item, index) => (
               <PostList
                 key={item.slug}
+                index={index}
                 cover={item.cover}
                 title={item.title}
                 slug={item.slug}
                 excerpt={item.excerpt}
-                infoList={renderInfoList(item)}
+                date={item.updated}
               />
             ))
-        : null}
-      <LiteLoading text='~' />
+        : (
+          <View className={styles.emptyWrapper}>
+            <Text className={styles.emptyIcon}>📖</Text>
+            <Text className={styles.emptyText}>暂无浏览记录</Text>
+            <Text className={styles.emptyHint}>浏览过的文章会出现在这里</Text>
+          </View>
+        )}
+      {sortedHistories.length > 0 && <LiteLoading text='~' />}
     </View>
   );
 };

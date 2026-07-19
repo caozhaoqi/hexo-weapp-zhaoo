@@ -3,10 +3,44 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
 
   .text {
-    margin-left: 10px;
     font-size: 24px;
-    color: $color-light;
+    color: var(--color-light);
+  }
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 4px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-link);
+    animation: dotPulse 1.4s ease-in-out infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
   }
 }

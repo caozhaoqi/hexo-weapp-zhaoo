@@ -10,7 +10,7 @@
   margin: 0 10px 20px 0;
   border-radius: 15px;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: var(--color-background);
 }
 
 .image {
@@ -18,9 +18,9 @@
   height: 345px;
   background: linear-gradient(
     90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
+    var(--color-skeleton-1) 25%,
+    var(--color-skeleton-2) 50%,
+    var(--color-skeleton-1) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
@@ -34,9 +34,9 @@
   height: 28px;
   background: linear-gradient(
     90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
+    var(--color-skeleton-1) 25%,
+    var(--color-skeleton-2) 50%,
+    var(--color-skeleton-1) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
@@ -49,9 +49,9 @@
   height: 24px;
   background: linear-gradient(
     90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
+    var(--color-skeleton-1) 25%,
+    var(--color-skeleton-2) 50%,
+    var(--color-skeleton-1) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
@@ -74,9 +74,9 @@
   border-radius: 50%;
   background: linear-gradient(
     90deg,
-    #f0f0f0 25%,
-    #e0e0e0 50%,
-    #f0f0f0 75%
+    var(--color-skeleton-1) 25%,
+    var(--color-skeleton-2) 50%,
+    var(--color-skeleton-1) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;

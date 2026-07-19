@@ -17,7 +17,7 @@ const About = () => {
   useShareAppMessage(() => {
     return {
       title: '关于应用',
-      path: '/pages/about/about',
+      path: '/pages/extra/about/about',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
       userName: '',
@@ -40,7 +40,7 @@ const About = () => {
           extraText='Arona'
           onClick={() =>
             Taro.navigateTo({
-              url: `/pages/webview/webview?url=https://cdn.jsdelivr.net/gh/https://caozhaoqi.github.io`,
+              url: `/pages/extra/webview/webview?url=https://caozhaoqi.github.io`,
             })
           }
         />

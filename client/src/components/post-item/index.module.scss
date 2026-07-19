@@ -6,8 +6,10 @@
   margin: 0 10px 20px 10px;
   border-radius: 15px;
   overflow: hidden;
-  background-color: $color-background;
-  box-shadow: $box-shadow;
+  background-color: var(--color-background);
+  box-shadow: 0 2px 20px var(--color-shadow);
+  /* 隔离该子树的布局/绘制/样式计算，避免列表项之间相互影响导致的重排扩散 */
+  contain: layout style paint;
 
   .top {
     position: absolute;
@@ -15,7 +17,7 @@
     top: -32px;
     width: 50px;
     height: 50px;
-    background-color: $color-link;
+    background-color: var(--color-link);
     transform: rotate(-45deg);
     box-shadow: -3px 5px 6px -5px rgba(0, 0, 0, 0.5);
   }

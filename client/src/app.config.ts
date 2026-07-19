@@ -5,13 +5,31 @@ export default {
     'pages/my/my',
     'pages/galleries/galleries',
     'pages/gallery/gallery',
-    'pages/history/history',
-    'pages/webview/webview',
-    'pages/about/about',
-    'pages/laboratory/laboratory',
-    'pages/like/like',
-    'pages/developer/developer',
   ],
+  subPackages: [
+    {
+      root: 'pages/extra',
+      pages: [
+        'about/about',
+        'laboratory/laboratory',
+        'developer/developer',
+        'like/like',
+        'history/history',
+        'webview/webview',
+        'comment/comment',
+      ],
+    },
+  ],
+  preloadRule: {
+    'pages/home/home': {
+      network: 'all',
+      packages: ['pages/extra'],
+    },
+    'pages/my/my': {
+      network: 'all',
+      packages: ['pages/extra'],
+    },
+  },
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',

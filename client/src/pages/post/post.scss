@@ -18,7 +18,7 @@
           rgba(0, 0, 0, 0),
           rgba(0, 0, 0, 0.75));
       padding: 30px;
-      color: $color-white;
+      color: var(--color-white);
 
       .title {
         font-size: 1.4rem;
@@ -41,7 +41,7 @@
 
   .content {
     padding: 30px;
-    color: $color-middle;
+    color: var(--color-middle);
     line-height: 2;
     font-size: 0.95rem;
     user-select: text;
@@ -49,7 +49,7 @@
 
     h1, h2, h3, h4, h5, h6 {
       font-weight: bold;
-      color: $color-default;
+      color: var(--color-default);
       margin-top: 2rem;
       margin-bottom: 1rem;
     }
@@ -68,7 +68,7 @@
 
     strong, b {
       font-weight: bold;
-      color: $color-default;
+      color: var(--color-default);
     }
 
     em, i {
@@ -84,15 +84,15 @@
     }
 
     a {
-      color: $color-link;
+      color: var(--color-link);
       text-decoration: underline;
     }
 
     code {
-      background-color: $color-background-deep;
+      background-color: var(--color-background-deep);
       padding: 2px 5px;
       border-radius: 4px;
-      color: $color-link;
+      color: var(--color-link);
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
       font-size: 0.9em;
     }
@@ -202,14 +202,14 @@
     blockquote {
       margin: 1rem 0;
       padding: 15px 20px;
-      background-color: $color-background-deep;
-      border-left: 4px solid $color-link;
+      background-color: var(--color-background-deep);
+      border-left: 4px solid var(--color-link);
       border-radius: 0 4px 4px 0;
 
       p {
         margin: 0;
         text-indent: 0;
-        color: $color-default;
+        color: var(--color-default);
       }
     }
 
@@ -220,15 +220,15 @@
       font-size: 0.9rem;
 
       th, td {
-        border: 1px solid $color-default;
+        border: 1px solid var(--color-default);
         padding: 8px 12px;
         text-align: left;
       }
 
       th {
-        background-color: $color-background-deep;
+        background-color: var(--color-background-deep);
         font-weight: bold;
-        color: $color-default;
+        color: var(--color-default);
       }
 
       tr:nth-child(even) {
@@ -246,7 +246,7 @@
 
     hr {
       border: none;
-      border-top: 1px solid $color-default;
+      border-top: 1px solid var(--color-default);
       margin: 2rem 0;
     }
 
@@ -340,16 +340,16 @@
     bottom: 200rpx;
     width: 88rpx;
     height: 88rpx;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--color-background);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4rpx 16rpx var(--color-shadow);
     z-index: 100;
 
     &:active {
-      background: rgba(255, 255, 255, 0.7);
+      background: var(--color-background-deep);
     }
   }
 
@@ -378,7 +378,7 @@
     left: 0;
     right: 0;
     max-height: 70vh;
-    background: #fff;
+    background: var(--color-background);
     border-radius: 24rpx 24rpx 0 0;
     animation: slideUp 0.3s ease;
     z-index: 1;
@@ -389,13 +389,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 32rpx;
-    border-bottom: 1rpx solid #f0f0f0;
+    border-bottom: 1rpx solid var(--color-border);
   }
 
   .toc-title {
     font-size: 32rpx;
     font-weight: bold;
-    color: #333;
+    color: var(--color-default);
   }
 
   .toc-close {
@@ -421,12 +421,12 @@
     transition: background 0.2s;
 
     &:active {
-      background: #f5f5f5;
+      background: var(--color-background-deep);
     }
 
     text {
       font-size: 28rpx;
-      color: #666;
+      color: var(--color-middle);
       line-height: 1.6;
     }
 
@@ -435,7 +435,7 @@
       text {
         font-size: 30rpx;
         font-weight: bold;
-        color: #333;
+        color: var(--color-default);
       }
     }
 
@@ -443,7 +443,7 @@
       padding-left: 64rpx;
       text {
         font-size: 28rpx;
-        color: #444;
+        color: var(--color-default);
       }
     }
 
@@ -451,7 +451,7 @@
       padding-left: 80rpx;
       text {
         font-size: 26rpx;
-        color: #555;
+        color: var(--color-middle);
       }
     }
 
@@ -459,7 +459,7 @@
       padding-left: 96rpx;
       text {
         font-size: 26rpx;
-        color: #666;
+        color: var(--color-middle);
       }
     }
 
@@ -467,7 +467,7 @@
       padding-left: 112rpx;
       text {
         font-size: 24rpx;
-        color: #777;
+        color: var(--color-light);
       }
     }
 
@@ -475,7 +475,7 @@
       padding-left: 128rpx;
       text {
         font-size: 24rpx;
-        color: #888;
+        color: var(--color-light);
       }
     }
   }
@@ -495,6 +495,46 @@
     }
     to {
       transform: translateY(0);
+    }
+  }
+}
+
+.post-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40rpx;
+  background: var(--color-background);
+
+  .error-icon {
+    font-size: 100rpx;
+    margin-bottom: 24rpx;
+  }
+
+  .error-text {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: var(--color-default);
+    margin-bottom: 12rpx;
+  }
+
+  .error-hint {
+    font-size: 26rpx;
+    color: var(--color-light);
+    margin-bottom: 40rpx;
+  }
+
+  .error-retry {
+    padding: 20rpx 60rpx;
+    background: linear-gradient(135deg, #ff3b00, #ff6b35);
+    border-radius: 40rpx;
+
+    text {
+      font-size: 28rpx;
+      color: #fff;
+      font-weight: 500;
     }
   }
 }

@@ -26,7 +26,7 @@ const CommentPage = () => {
   useShareAppMessage(() => {
     return {
       title: '全部评论',
-      path: '/pages/comment/comment',
+      path: '/pages/extra/comment/comment',
       imageUrl: DEFAULT_SHARE_IMAGE,
       webpageUrl: '',
       userName: '',

@@ -2,7 +2,7 @@
   position: relative;
   height: 100vh;
   width: 100vw;
-  background: #f5f5f5;
+  background: var(--color-background-deep);
 }
 
 .search-bar {
@@ -10,9 +10,10 @@
   top: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
+  background: var(--color-background);
   padding: 16rpx 24rpx;
   z-index: 1002;
+  box-shadow: 0 2rpx 12rpx var(--color-shadow);
 }
 
 .home {
@@ -22,7 +23,7 @@
   right: 0;
   bottom: 0;
   overflow-y: auto;
-  background: #f5f5f5;
+  background: var(--color-background-deep);
 }
 
 .home-inner {
@@ -39,13 +40,13 @@
 
 .icon-text {
   font-size: 32rpx;
-  color: #999999;
+  color: var(--color-light);
 }
 
 .search-input {
   width: 100%;
   height: 72rpx;
-  background: #f5f5f5;
+  background: var(--color-input-bg);
   border-radius: 36rpx;
   padding: 0 80rpx 0 72rpx;
   font-size: 28rpx;
@@ -59,7 +60,7 @@
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;
-  background: #cccccc;
+  background: var(--color-divider);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,14 +69,14 @@
 
 .clear-icon {
   font-size: 24rpx;
-  color: #ffffff;
+  color: var(--color-white);
   font-weight: bold;
 }
 
 .filter-bar {
-  background: #ffffff;
+  background: var(--color-background);
   padding: 16rpx 0;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid var(--color-background-deep);
 }
 
 .tag-scroll {
@@ -91,23 +92,24 @@
   display: inline-block;
   padding: 12rpx 24rpx;
   margin-right: 20rpx;
-  background: #f5f5f5;
+  background: var(--color-tag-bg);
   border-radius: 24rpx;
   font-size: 26rpx;
-  color: #666666;
-  transition: all 0.3s ease;
+  color: var(--color-middle);
+  /* 仅过渡会用到的属性，避免 all 触发非必要重排重绘 */
+  transition: background-color 0.25s ease, color 0.25s ease;
 
   &.active {
     background: linear-gradient(135deg, #ff3b00 0%, #ff6b35 100%);
-    color: #ffffff;
+    color: var(--color-white);
   }
 }
 
 .sort-bar {
   display: flex;
-  background: #ffffff;
+  background: var(--color-background);
   padding: 16rpx 20rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid var(--color-background-deep);
 }
 
 .sort-item {
@@ -115,8 +117,8 @@
   text-align: center;
   padding: 12rpx 0;
   font-size: 26rpx;
-  color: #999999;
-  transition: all 0.3s ease;
+  color: var(--color-light);
+  transition: color 0.25s ease;
 
   &.active {
     color: #ff3b00;
@@ -131,7 +133,7 @@
     margin: 8rpx auto 0;
     background: linear-gradient(135deg, #ff3b00 0%, #ff6b35 100%);
     border-radius: 2rpx;
-    transition: width 0.3s ease;
+    transition: width 0.25s ease;
   }
 
   &.active::after {
@@ -140,7 +142,7 @@
 }
 
 .gallery-section {
-  background: #ffffff;
+  background: var(--color-background);
   margin-top: 20rpx;
   padding: 24rpx 0;
 
@@ -150,7 +152,7 @@
     .section-title {
       font-size: 32rpx;
       font-weight: bold;
-      color: #333333;
+      color: var(--color-default);
     }
   }
 
@@ -180,7 +182,7 @@
       .gallery-name {
         display: block;
         font-size: 26rpx;
-        color: #333333;
+        color: var(--color-default);
         text-align: center;
         margin-bottom: 4rpx;
       }
@@ -188,7 +190,7 @@
       .gallery-count {
         display: block;
         font-size: 22rpx;
-        color: #999999;
+        color: var(--color-light);
         text-align: center;
       }
     }
@@ -197,7 +199,7 @@
 
 .search-suggest-overlay {
   position: fixed;
-  top: 0;
+  top: 104rpx;
   left: 0;
   right: 0;
   bottom: 0;
@@ -206,12 +208,12 @@
 
 .search-suggest-container {
   position: relative;
-  background: #ffffff;
-  padding: 20rpx;
+  background: var(--color-background);
+  padding: 20rpx 24rpx;
   border-radius: 0 0 24rpx 24rpx;
   max-height: 60vh;
   overflow-y: auto;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8rpx 32rpx var(--color-shadow);
 }
 
 .search-suggest-mask {
@@ -220,7 +222,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .search-history {
@@ -235,13 +237,13 @@
     .history-title {
       font-size: 28rpx;
       font-weight: bold;
-      color: #333333;
+      color: var(--color-default);
     }
 
     .history-clear {
       .clear-text {
         font-size: 24rpx;
-        color: #999999;
+        color: var(--color-light);
       }
     }
   }
@@ -253,12 +255,12 @@
 
     .history-item {
       padding: 12rpx 24rpx;
-      background: #f5f5f5;
+      background: var(--color-tag-bg);
       border-radius: 24rpx;
 
       .keyword {
         font-size: 26rpx;
-        color: #666666;
+        color: var(--color-middle);
       }
     }
   }
@@ -271,7 +273,7 @@
     .hot-title {
       font-size: 28rpx;
       font-weight: bold;
-      color: #333333;
+      color: var(--color-default);
     }
   }
 

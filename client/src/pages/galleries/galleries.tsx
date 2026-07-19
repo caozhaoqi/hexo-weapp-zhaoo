@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useShareTimeline, useShareAppMessage, usePullDownRefresh, stopPullDownRefresh, vibrateShort } from '@tarojs/taro';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import Taro, { useShareTimeline, useShareAppMessage, usePullDownRefresh, stopPullDownRefresh, vibrateShort } from '@tarojs/taro';
 import { View, Text, Image } from '@tarojs/components';
 import { getPosts } from '@/apis/api';
 import { IPostItem } from '@/types/post';
+import LiteLoading from '@/components/lite-loading';
 import config from '../../../config.json';
 import { setStorageSync, getStorageSync } from '@/utils/storage';
 import './galleries.scss';
@@ -74,7 +75,6 @@ const Galleries = () => {
 
   const loadTimelineData = useCallback(async () => {
     const cached = getStorageSync(TIMELINE_CACHE_KEY) as TimelineCacheData | null;
-    // console.log('[时间轴] 缓存数据:', cached);
     if (cached && cached.groupedPosts) {
       const now = Date.now();
       if (now - cached.timestamp < TIMELINE_CACHE_EXPIRE) {
@@ -99,39 +99,46 @@ const Galleries = () => {
 
   const fetchTimelineData = async () => {
     try {
-      const allPosts: IPostItem[] = [];
-      let page = 1;
-      let hasMore = true;
-      let totalPages = 0;
-      const MAX_PAGES = 20;
+      // 先获取第一页，拿到总页数后并行加载剩余页面
+      const firstRes = await getPosts(1);
+      if (!firstRes || (!firstRes.data && !firstRes.length)) {
+        console.warn('[时间轴] 未获取到任何文章数据');
+        setGroupedPosts([]);
+        return;
+      }
 
-      while (hasMore && page <= MAX_PAGES) {
-        const res = await getPosts(page);
-        console.log('[时间轴] 获取第', page, '页数据:', res);
-        if (res && res.data && res.data.length > 0) {
-          allPosts.push(...res.data);
-          if (res.pageCount) {
-            totalPages = res.pageCount;
-            if (page >= res.pageCount) {
-              hasMore = false;
+      const allPosts: IPostItem[] = [];
+      let totalPages = 0;
+
+      if (firstRes.data && firstRes.data.length > 0) {
+        allPosts.push(...firstRes.data);
+        totalPages = firstRes.pageCount || 1;
+      } else if (firstRes.length > 0) {
+        allPosts.push(...firstRes);
+      }
+
+      // 并行加载剩余页面（限制并发数避免请求过多）
+      if (totalPages > 1) {
+        const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+        const BATCH_SIZE = 5;
+        for (let i = 0; i < remainingPages.length; i += BATCH_SIZE) {
+          const batch = remainingPages.slice(i, i + BATCH_SIZE);
+          const results = await Promise.all(batch.map((p) => getPosts(p).catch(() => null)));
+          results.forEach((res) => {
+            if (res) {
+              if (res.data && res.data.length > 0) {
+                allPosts.push(...res.data);
+              } else if (res.length > 0) {
+                allPosts.push(...res);
+              }
             }
-          }
-          page++;
-        } else if (res && res.length > 0) {
-          allPosts.push(...res);
-          page++;
-          if (res.length < 10) {
-            hasMore = false;
-          }
-        } else {
-          hasMore = false;
+          });
         }
       }
 
       console.log('[时间轴] 总共获取到', allPosts.length, '篇文章');
 
       if (allPosts.length === 0) {
-        console.warn('[时间轴] 未获取到任何文章数据');
         setGroupedPosts([]);
         return;
       }
@@ -176,20 +183,37 @@ const Galleries = () => {
     fetchTimelineData();
   };
 
-  const handleImageError = (url: string) => {
-    setFailedImages((prev) => new Set(prev).add(url));
-  };
+  const handleImageError = useCallback((url: string) => {
+    setFailedImages((prev) => {
+      if (prev.has(url)) return prev; // 已存在则返回原引用，避免不必要重渲染
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
+  }, []);
 
-  const getCoverUrl = (post: IPostItem, index: number): string => {
-    if (post.cover) {
-      const url = getImageUrl(post.cover);
-      if (failedImages.has(url)) {
-        return LOCAL_COVERS[index % LOCAL_COVERS.length];
-      }
-      return url;
-    }
-    return LOCAL_COVERS[index % LOCAL_COVERS.length];
-  };
+  // 预计算每篇文章的全局索引和封面 URL，避免 render 过程中可变状态
+  // 之前用 `let globalIndex = 0` 在 render 中累加，是反模式且容易因重渲染出错
+  const flattenedItems = useMemo(() => {
+    let cursor = 0;
+    return groupedPosts.map((group) => ({
+      ...group,
+      items: group.posts.map((post) => {
+        const index = cursor++;
+        const originalUrl = post.cover ? getImageUrl(post.cover) : '';
+        const coverUrl = originalUrl && failedImages.has(originalUrl)
+          ? LOCAL_COVERS[index % LOCAL_COVERS.length]
+          : (originalUrl || LOCAL_COVERS[index % LOCAL_COVERS.length]);
+        return { post, index, coverUrl };
+      }),
+    }));
+  }, [groupedPosts, failedImages]);
+
+  const handlePostClick = useCallback((slug: string) => {
+    Taro.navigateTo({
+      url: `/pages/post/post?slug=${slug}`,
+    });
+  }, []);
 
   useShareTimeline(() => {
     return {
@@ -212,25 +236,16 @@ const Galleries = () => {
     };
   });
 
-  const handlePostClick = (slug: string) => {
-    const Taro = require('@tarojs/taro').default;
-    Taro.navigateTo({
-      url: `/pages/post/post?slug=${slug}`,
-    });
-  };
-
-  let globalIndex = 0;
-
   return (
     <View className='galleries'>
 
       {isLoading ? (
         <View className='loading'>
-          <Text>加载中...</Text>
+          <LiteLoading loading text='正在加载时间轴...' />
         </View>
       ) : groupedPosts.length > 0 ? (
-        groupedPosts.map((group, groupIndex) => (
-          <View key={groupIndex} className='timeline-group'>
+        flattenedItems.map((group, groupIndex) => (
+          <View key={group.date || groupIndex} className='timeline-group'>
             <View className='date-divider'>
               <View className='date-line date-line-left' />
               <View className='date-dot' />
@@ -239,37 +254,35 @@ const Galleries = () => {
               <View className='date-line date-line-right' />
             </View>
             <View className='post-list'>
-              {group.posts.map((post, postIndex) => {
-                const index = globalIndex++;
-                const coverUrl = getCoverUrl(post, index);
-                return (
-                  <View
-                    key={post.slug || postIndex}
-                    className='timeline-item'
-                    onClick={() => handlePostClick(post.slug)}
-                  >
-                    <View className='item-content'>
-                      <Text className='item-title'>{post.title}</Text>
-                      <Text className='item-excerpt'>{post.excerpt}</Text>
-                    </View>
-                    <View className='item-cover-wrapper'>
-                      <Image
-                        className='item-cover'
-                        src={coverUrl}
-                        lazyLoad
-                        mode='aspectFill'
-                        onError={() => handleImageError(coverUrl)}
-                      />
-                    </View>
+              {group.items.map(({ post, index, coverUrl }) => (
+                <View
+                  key={post.slug || index}
+                  className='timeline-item'
+                  onClick={() => handlePostClick(post.slug)}
+                >
+                  <View className='item-content'>
+                    <Text className='item-title'>{post.title}</Text>
+                    <Text className='item-excerpt'>{post.excerpt}</Text>
                   </View>
-                );
-              })}
+                  <View className='item-cover-wrapper'>
+                    <Image
+                      className='item-cover'
+                      src={coverUrl}
+                      lazyLoad
+                      mode='aspectFill'
+                      onError={() => handleImageError(coverUrl)}
+                    />
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
         ))
       ) : (
         <View className='empty'>
-          <Text>暂无文章</Text>
+          <Text className='empty-icon'>📭</Text>
+          <Text className='empty-text'>还没有文章</Text>
+          <Text className='empty-hint'>下拉刷新试试看</Text>
         </View>
       )}
     </View>

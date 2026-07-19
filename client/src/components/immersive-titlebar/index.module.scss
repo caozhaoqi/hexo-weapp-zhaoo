@@ -1,6 +1,6 @@
 .immersiveTitlebar {
   width: 100vw;
-  background-color: $color-white;
+  background-color: var(--color-background);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

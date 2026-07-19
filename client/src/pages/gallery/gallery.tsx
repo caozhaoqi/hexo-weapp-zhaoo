@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import Taro, {
   getCurrentInstance,
   useShareTimeline,
@@ -7,6 +7,7 @@ import Taro, {
 import { View, Image, Text } from '@tarojs/components';
 import { getGalleryByName } from '@/apis/api';
 import { IGalleryItem } from '@/types/gallery';
+import Loading from '@/components/loading';
 import './gallery.scss';
 
 const DEFAULT_SHARE_IMAGE = '/assets/images/logo.png';
@@ -35,6 +36,7 @@ const DEFAULT_GALLERY: IGalleryItem = {
 const Gallery = () => {
   const { name } = getCurrentInstance()?.router?.params || {};
   const [gallery, setGallery] = useState<IGalleryItem | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchGalleryData();
@@ -63,6 +65,7 @@ const Gallery = () => {
 
   const fetchGalleryData = async () => {
     Taro.setNavigationBarTitle({ title: name || '' });
+    setIsLoading(true);
     try {
       const data = await getGalleryByName(name);
       if (data && data.photos && data.photos.length > 0) {
@@ -72,44 +75,50 @@ const Gallery = () => {
       }
     } catch (e) {
       setGallery(DEFAULT_GALLERY);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handlePreviewImage = (current: string) => {
+  // 稳定的图片预览回调：闭包只依赖 gallery，避免每次渲染重建
+  const handlePreviewImage = useCallback((current: string) => {
     Taro.previewImage({
       current,
       urls: gallery?.photos || [],
     });
-  };
+  }, [gallery]);
 
   return (
     <View className='gallery'>
-      {gallery ? (
+      {isLoading ? (
+        <Loading />
+      ) : gallery ? (
         <View>
           <View className='title'>
             <Text className='name'>{gallery.name}</Text>
             <Text className='description'>{gallery.description}</Text>
           </View>
           <View className='grid'>
-            {gallery.photos.map((item: string, index: number) => {
-              return (
-                <Image
-                  src={item}
-                  key={index}
-                  lazyLoad
-                  mode='aspectFill'
-                  className='photo'
-                  onClick={() => {
-                    handlePreviewImage(item);
-                  }}
-                />
-              );
-            })}
+            {gallery.photos.map((item: string, index: number) => (
+              <Image
+                src={item}
+                key={index}
+                lazyLoad
+                mode='aspectFill'
+                className='photo'
+                onClick={() => handlePreviewImage(item)}
+              />
+            ))}
           </View>
         </View>
-      ) : null}
+      ) : (
+        <View className='gallery-empty'>
+          <Text className='empty-icon'>🖼️</Text>
+          <Text className='empty-text'>暂无照片</Text>
+        </View>
+      )}
     </View>
   );
 };
 
-export default Gallery;
+export default memo(Gallery);

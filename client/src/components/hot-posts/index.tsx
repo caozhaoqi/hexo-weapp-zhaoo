@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import { IPostItem } from '@/types/post';
@@ -32,6 +32,10 @@ const HotPosts: FC<IHotPostsProps> = ({ posts, limit = 5 }) => {
       .slice(0, limit);
   }, [posts, limit]);
 
+  const handleClick = (slug: string) => {
+    Taro.navigateTo({ url: `/pages/post/post?slug=${slug}` });
+  };
+
   if (hotPosts.length === 0) return null;
 
   return (
@@ -47,9 +51,9 @@ const HotPosts: FC<IHotPostsProps> = ({ posts, limit = 5 }) => {
           const coverUrl = getImageUrl(post.cover);
           return (
             <View
-              key={index}
+              key={post.slug || index}
               className={styles.item}
-              onClick={() => Taro.navigateTo({ url: `/pages/post/post?slug=${post.slug}` })}
+              onClick={() => handleClick(post.slug)}
             >
               <View className={styles.rank}>
                 <Text className={`${styles.rankText} ${index < 3 ? styles.topThree : ''}`}>
@@ -73,4 +77,4 @@ const HotPosts: FC<IHotPostsProps> = ({ posts, limit = 5 }) => {
   );
 };
 
-export default HotPosts;
+export default memo(HotPosts);

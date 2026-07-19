@@ -1,9 +1,12 @@
 .loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
-  left: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--color-background);
   z-index: 2021;
 }

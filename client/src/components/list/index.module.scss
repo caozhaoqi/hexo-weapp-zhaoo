@@ -6,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: $color-background;
+  background-color: var(--color-background);
 
   .left,
   .right {
@@ -17,12 +17,12 @@
   .title {
     font-size: 28px;
     line-height: 28px;
-    color: $color-default;
+    color: var(--color-default);
   }
 
   .extraText {
     font-size: 28px;
     line-height: 28px;
-    color: $color-middle;
+    color: var(--color-middle);
   }
 }

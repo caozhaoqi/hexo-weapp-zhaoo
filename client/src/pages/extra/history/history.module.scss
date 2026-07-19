@@ -1,0 +1,38 @@
+.history {
+  width: 750px;
+  min-height: 100vh;
+  padding: 30px 0;
+  background-color: var(--color-background-deep);
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.emptyWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+  gap: 16rpx;
+
+  .emptyIcon {
+    font-size: 80rpx;
+    margin-bottom: 8rpx;
+  }
+
+  .emptyText {
+    font-size: 30rpx;
+    color: var(--color-middle);
+    font-weight: 500;
+  }
+
+  .emptyHint {
+    font-size: 24rpx;
+    color: var(--color-light);
+  }
+}

@@ -1,11 +1,12 @@
 import { useShareAppMessage, useShareTimeline, showToast } from '@tarojs/taro';
-import { ScrollView, View, Text, Input, Image } from '@tarojs/components';
+import { ScrollView, View, Text, Input } from '@tarojs/components';
 import usePagination from '@/hooks/usePagination';
 import PostItem from '@/components/post-item';
 import LiteLoading from '@/components/lite-loading';
 import Skeleton from '@/components/skeleton';
 import HotPosts from '@/components/hot-posts';
-import { useState, useEffect } from 'react';
+// import Banner from '@/components/banner';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { getGalleries } from '@/apis/api';
 import { IGalleryItem } from '@/types/gallery';
 import { getSearchHistory, addSearchHistory, clearSearchHistory, HOT_SEARCH_KEYWORDS } from '@/utils/index';
@@ -38,24 +39,43 @@ const DEFAULT_GALLERIES: IGalleryItem[] = [
 ];
 
 const Home = () => {
-  const [posts, hasMore, isLoading, { allTags, sortBy, setSortBy, selectedTag, setSelectedTag, searchKeyword, setSearchKeyword }] = usePagination();
+  const [posts, hasMore, isLoading, { sortBy, setSortBy, searchKeyword, setSearchKeyword }] = usePagination();
   const [galleries, setGalleries] = useState<IGalleryItem[]>([]);
   const [isGalleriesLoading, setIsGalleriesLoading] = useState<boolean>(true);
   const [searchFocused, setSearchFocused] = useState<boolean>(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setSearchHistory(getSearchHistory());
   }, []);
 
-  const handleSearchConfirm = () => {
-    if (searchKeyword.trim()) {
-      addSearchHistory(searchKeyword);
+  // Sync inputValue when searchKeyword changes from external sources (hot search, history click)
+  useEffect(() => {
+    setInputValue(searchKeyword);
+  }, [searchKeyword]);
+
+  const handleSearchInput = useCallback((e: any) => {
+    const value = e.detail.value;
+    setInputValue(value);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      setSearchKeyword(value);
+    }, 300);
+  }, [setSearchKeyword]);
+
+  const handleSearchConfirm = useCallback(() => {
+    const keyword = inputValue.trim();
+    if (keyword) {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      setSearchKeyword(keyword);
+      addSearchHistory(keyword);
       setSearchHistory(getSearchHistory());
     }
-  };
+  }, [inputValue, setSearchKeyword]);
 
-  const handleClearHistory = () => {
+  const handleClearHistory = useCallback(() => {
     Taro.showModal({
       title: '清除搜索历史',
       content: '确定要清除所有搜索历史吗？',
@@ -71,13 +91,31 @@ const Home = () => {
         }
       },
     });
-  };
+  }, []);
 
-  const handleHotSearchClick = (keyword: string) => {
+  const handleHotSearchClick = useCallback((keyword: string) => {
     setSearchKeyword(keyword);
     addSearchHistory(keyword);
     setSearchHistory(getSearchHistory());
-  };
+  }, [setSearchKeyword]);
+
+  const handleHistoryClick = useCallback((keyword: string) => {
+    setSearchKeyword(keyword);
+  }, [setSearchKeyword]);
+
+  const handleClearInput = useCallback(() => {
+    setInputValue('');
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    setSearchKeyword('');
+  }, [setSearchKeyword]);
+
+  const handleSearchFocus = useCallback(() => setSearchFocused(true), []);
+  const handleSearchBlur = useCallback(() => setSearchFocused(false), []);
+
+  const handleSortLatest = useCallback(() => setSortBy('latest'), [setSortBy]);
+  const handleSortEarliest = useCallback(() => setSortBy('earliest'), [setSortBy]);
+
+  const handleSearchMaskClick = useCallback(() => setSearchFocused(false), []);
 
   useEffect(() => {
     fetchGalleries();
@@ -100,12 +138,11 @@ const Home = () => {
     }
   };
 
-  const handleGalleryClick = (name: string) => {
-
+  const handleGalleryClick = useCallback((name: string) => {
     Taro.navigateTo({
       url: `/pages/gallery/gallery?name=${name}`,
     });
-  };
+  }, []);
 
   useShareTimeline(() => {
     return {
@@ -128,26 +165,33 @@ const Home = () => {
     };
   });
 
+  // 是否显示搜索建议面板（避免在每次渲染中重新计算条件）
+  const showSuggest = searchFocused && !inputValue;
+
+  // 缓存 sort bar 项的 className，避免每次渲染拼接字符串
+  const latestSortClass = useMemo(() => `sort-item ${sortBy === 'latest' ? 'active' : ''}`, [sortBy]);
+  const earliestSortClass = useMemo(() => `sort-item ${sortBy === 'earliest' ? 'active' : ''}`, [sortBy]);
+
   return (
     <View className='home-wrapper'>
       <View className='search-bar'>
-        <View className='search-icon'>
-          <Text className='icon-text'></Text>
-        </View>
+        {/*<View className='search-icon'>*/}
+          {/*<Text className='icon-text'>🔍</Text>*/}
+        {/*</View>*/}
         <Input
           className='search-input'
           placeholder='搜索文章标题、内容或标签'
-          value={searchKeyword}
-          onInput={(e: any) => setSearchKeyword(e.detail.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
-          onConfirm={() => handleSearchConfirm()}
+          value={inputValue}
+          onInput={handleSearchInput}
+          onFocus={handleSearchFocus}
+          onBlur={handleSearchBlur}
+          onConfirm={handleSearchConfirm}
           type='text'
           confirmType='search'
           adjustPosition={false}
         />
-        {searchKeyword && (
-          <View className='search-clear' onClick={() => setSearchKeyword('')}>
+        {inputValue && (
+          <View className='search-clear' onClick={handleClearInput}>
             <Text className='clear-icon'>✕</Text>
           </View>
         )}
@@ -155,17 +199,13 @@ const Home = () => {
 
       <ScrollView className='home' scrollY>
         <View className='home-inner'>
+          {/*<Banner />*/}
+
           <View className='sort-bar'>
-            <View
-              className={`sort-item ${sortBy === 'latest' ? 'active' : ''}`}
-              onClick={() => setSortBy('latest')}
-            >
+            <View className={latestSortClass} onClick={handleSortLatest}>
               <Text>最新发布</Text>
             </View>
-            <View
-              className={`sort-item ${sortBy === 'earliest' ? 'active' : ''}`}
-              onClick={() => setSortBy('earliest')}
-            >
+            <View className={earliestSortClass} onClick={handleSortEarliest}>
               <Text>最早发布</Text>
             </View>
           </View>
@@ -174,7 +214,7 @@ const Home = () => {
 
           {posts.length > 0 ? (
             posts.map((item, index: number) => (
-              <PostItem data={item} key={index} index={index} />
+              <PostItem data={item} key={item.slug || index} index={index} />
             ))
           ) : isLoading ? (
             <Skeleton loading={true} />
@@ -184,14 +224,14 @@ const Home = () => {
         </View>
       </ScrollView>
 
-      {/* {searchFocused && !searchKeyword && (
+      {showSuggest && (
         <View className='search-suggest-overlay'>
           <View className='search-suggest-container' onClick={(e) => e.stopPropagation()}>
             {searchHistory.length > 0 && (
               <View className='search-history'>
                 <View className='history-header'>
                   <Text className='history-title'>搜索历史</Text>
-                  <View className='history-clear' onClick={() => handleClearHistory()}>
+                  <View className='history-clear' onClick={handleClearHistory}>
                     <Text className='clear-text'>清空</Text>
                   </View>
                 </View>
@@ -200,7 +240,7 @@ const Home = () => {
                     <View
                       key={index}
                       className='history-item'
-                      onClick={() => setSearchKeyword(keyword)}
+                      onClick={() => handleHistoryClick(keyword)}
                     >
                       <Text className='keyword'>{keyword}</Text>
                     </View>
@@ -225,9 +265,9 @@ const Home = () => {
               </View>
             </View>
           </View>
-          <View className='search-suggest-mask' onClick={() => setSearchFocused(false)} />
+          <View className='search-suggest-mask' onClick={handleSearchMaskClick} />
         </View>
-      )} */}
+      )}
     </View>
   );
 };

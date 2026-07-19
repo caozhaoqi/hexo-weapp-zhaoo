@@ -1,5 +1,5 @@
 .gallery {
-  background-color: $color-background;
+  background-color: var(--color-background);
   min-height: 100vh;
   padding: 10px;
 
@@ -18,7 +18,7 @@
 
     .description {
       @include substr(2);
-      color: $color-middle;
+      color: var(--color-middle);
     }
   }
 
@@ -30,6 +30,25 @@
     .photo {
       width: 100%;
       height: calc((100vw - 30px) / 2);
+      border-radius: 8rpx;
+    }
+  }
+
+  .gallery-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+
+    .empty-icon {
+      font-size: 100rpx;
+      margin-bottom: 24rpx;
+    }
+
+    .empty-text {
+      font-size: 28rpx;
+      color: var(--color-light);
     }
   }
 }

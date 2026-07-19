@@ -10,7 +10,7 @@ $color-cozy-white: #ffffff;
   position: relative;
   width: 750px;
   min-height: 100vh;
-  background-color: $color-cozy-bg;
+  background-color: var(--color-background-deep);
   padding-bottom: 64rpx;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
@@ -205,5 +205,227 @@ $color-cozy-white: #ffffff;
     padding: 6rpx 20rpx;
     border-radius: 8rpx;
     border: 2rpx solid rgba(92, 82, 77, 0.05);
+  }
+}
+
+// ===== 数据源管理样式 =====
+.sourceCount {
+  font-size: 22rpx;
+  color: $color-cozy-text-light;
+  background-color: #f6f3ee;
+  padding: 6rpx 20rpx;
+  border-radius: 100rpx;
+  font-weight: 500;
+}
+
+.resetBtn {
+  font-size: 22rpx;
+  color: $color-cozy-text-main;
+  background-color: #f6f3ee;
+  padding: 6rpx 20rpx;
+  border-radius: 100rpx;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.sourceHint {
+  padding: 16rpx 30rpx 0;
+  background-color: #fdfbf9;
+
+  .hintText {
+    font-size: 22rpx;
+    color: $color-cozy-text-light;
+    line-height: 1.6;
+  }
+}
+
+.sourceList {
+  padding: 16rpx 24rpx;
+  background-color: #fdfbf9;
+}
+
+.sourceItem {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 16rpx;
+  margin-bottom: 12rpx;
+  background-color: rgba(92, 82, 77, 0.02);
+  border-radius: 16rpx;
+  border: 2rpx solid rgba(92, 82, 77, 0.06);
+}
+
+.sourceOrder {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: $color-cozy-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+
+  .orderNum {
+    font-size: 22rpx;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+.sourceInfo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+
+  .sourceName {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: $color-cozy-text-main;
+    display: block;
+    margin-bottom: 4rpx;
+  }
+
+  .sourceUrl {
+    font-size: 20rpx;
+    color: $color-cozy-text-light;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.sourceActions {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}
+
+.actionBtn {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background-color: rgba(92, 82, 77, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+
+  &:active {
+    transform: scale(0.9);
+    background-color: rgba(92, 82, 77, 0.12);
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &.deleteBtn {
+    &:active {
+      background-color: rgba(201, 76, 76, 0.15);
+    }
+  }
+
+  .actionIcon {
+    font-size: 24rpx;
+    color: $color-cozy-text-main;
+  }
+}
+
+.sourceFooter {
+  padding: 0 24rpx 24rpx;
+  background-color: #fdfbf9;
+  border-radius: 0 0 32rpx 32rpx;
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  border: 3rpx dashed $color-cozy-border;
+  border-radius: 16rpx;
+  background-color: rgba(156, 116, 130, 0.03);
+  transition: all 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+    background-color: rgba(156, 116, 130, 0.08);
+  }
+
+  .addBtnText {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: $color-cozy-primary;
+  }
+}
+
+.editForm {
+  padding: 24rpx;
+  background-color: rgba(156, 116, 130, 0.04);
+  border-radius: 16rpx;
+  border: 2rpx solid rgba(156, 116, 130, 0.15);
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+
+  .formLabel {
+    width: 80rpx;
+    font-size: 26rpx;
+    font-weight: 600;
+    color: $color-cozy-text-main;
+    flex-shrink: 0;
+  }
+
+  .formInput {
+    flex: 1;
+    height: 64rpx;
+    padding: 0 20rpx;
+    font-size: 24rpx;
+    color: $color-cozy-text-main;
+    background-color: $color-cozy-white;
+    border-radius: 12rpx;
+    border: 2rpx solid $color-cozy-border;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 8rpx;
+
+  .cancelBtn,
+  .saveBtn {
+    padding: 14rpx 36rpx;
+    border-radius: 12rpx;
+    font-size: 26rpx;
+    font-weight: 600;
+    transition: all 0.15s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .cancelBtn {
+    background-color: rgba(92, 82, 77, 0.06);
+    color: $color-cozy-text-main;
+  }
+
+  .saveBtn {
+    background-color: $color-cozy-primary;
+    color: $color-cozy-white;
+    box-shadow: 0 4rpx 12rpx rgba($color-cozy-primary, 0.3);
   }
 }
